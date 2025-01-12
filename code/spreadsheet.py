@@ -1,11 +1,19 @@
+from Cell import Cell
+
 class Spreadsheet:
     def __init__(self):
         self.cells = {}
 
+    def edit_cell(self, coordinate, content):
+        if not self._validate_coordinates(coordinate):
+            raise ValueError("Invalid cell coordinates.")
+        print(f"Editing cell {coordinate} with new content: {content}")
+        self.set_cell_content(coordinate, content)
+        
     def set_cell_content(self, coordinate, content):
         if coordinate not in self.cells:
             self.cells[coordinate] = Cell()
-        self.cells[coordinate].set_content(content)
+        self.cells[coordinate].setContent(content)
 
     def get_cell_content(self, coordinate):
         if coordinate in self.cells:
@@ -18,11 +26,6 @@ class Spreadsheet:
             return self.cells[coordinate].get_value()
         else:
             raise ValueError(f"Cell at {coordinate} does not exist.")
-
-    def edit_cell(self, coordinate, content):
-        if not self._validate_coordinates(coordinate):
-            raise ValueError("Invalid cell coordinates.")
-        self.set_cell_content(coordinate, content)
 
     def _validate_coordinates(self, coordinate):
         # Validate coordinates like "A1", "B2", etc.

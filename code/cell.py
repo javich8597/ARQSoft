@@ -1,3 +1,7 @@
+from ContentHandler.Models.NumericalContent import NumericalContent
+from ContentHandler.Models.FormulaContent import FormulaContent
+from ContentHandler.Models.TextualContent import TextualContent
+
 class Cell:
     """
     Represents a single cell within a spreadsheet.
@@ -9,8 +13,21 @@ class Cell:
         """
         self.row = row
         self.col = col
-        self.content = content  # Raw content of the cell (e.g., number, text, formula)
+        self.content = self._identify_content(content)  # Raw content of the cell (e.g., number, text, formula)
         self.value = None  # Evaluated value of the cell (e.g., formula result)
+
+    def _identify_content(self, content):
+        """
+        Identifies the type of content and returns the appropriate content object.
+        """
+        if content is None:
+            return None
+        if isinstance(content, (int, float)):
+            return NumericalContent(content)
+        elif isinstance(content, str) and content.startswith("="):
+            return FormulaContent(content[1:])
+        else:
+            return TextualContent(content)
 
     def getCoordinate(self):
         """
@@ -35,7 +52,7 @@ class Cell:
         """
         Sets the raw content of the cell.
         """
-        self.content = content
+        self.content = self._identify_content(content)
 
     def getValue(self):
         """

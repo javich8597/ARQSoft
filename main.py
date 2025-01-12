@@ -1,5 +1,10 @@
-def main():
-    print("Hola, mundo!")
+from Controllers.SpreadsheetController import SpreadsheetController
 
-if __name__ == "__main__":
-    main()
+if _name_ == "_main_":
+    spreadsheetcontroller = SpreadsheetController()
+    while True:
+        
+        try:
+            spreadsheetcontroller.showMenu()
+        except Exception as Error:
+            print(Error.message)
