@@ -1,3 +1,5 @@
+from Spreadsheet import Spreadsheet
+
 class SpreadsheetLoader:
     @staticmethod
     def load_spreadsheet(path):
