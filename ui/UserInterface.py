@@ -1,5 +1,4 @@
 class UserInterface:
-    class UserInterface:
     """
     Handles user proposals for creating, opening, closing, and saving spreadsheets,
     as well as additional commands defined in the requirements.
