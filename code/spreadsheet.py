@@ -55,3 +55,7 @@ class Spreadsheet:
             return match.groups()
         else:
             raise ValueError("Invalid coordinate format.")
+    def getCellValues(self):
+        # Devuelve un diccionario con los valores de las celdas
+        return {cell.getCoordinate(): cell.getValue() for cell in self.cells}
+        #FALTA UN RANGO??

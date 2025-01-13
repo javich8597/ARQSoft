@@ -91,6 +91,8 @@ class PostfixGenerator:
                 categorized.append({"type": "operand", "value": float(token)})
             elif token in "+-*/()=":
                 categorized.append({"type": "operator", "value": token})
+            elif token in ["SUMA", "PROMEDIO", "MIN", "MAX"]:
+                categorized.append({"type": "function", "value": token})
             else:
                 categorized.append({"type": "variable", "value": token})
         return categorized
@@ -107,11 +109,13 @@ class PostfixGenerator:
         precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '(': 0}
 
         for token in tokens:
-            if token["type"] == "operand" or token["type"] == "variable":
+            if token["type"] in ["operand", "variable"]:
                 output.append(token)
             elif token["type"] == "operator":
                 while stack and precedence[stack[-1]["value"]] >= precedence[token["value"]]:
                     output.append(stack.pop())
+                stack.append(token)
+            elif token["type"] == "function":
                 stack.append(token)
             elif token["value"] == '(':
                 stack.append(token)
@@ -131,11 +135,12 @@ class PostfixEvaluator:
     Evaluates expressions in postfix notation.
     """
 
-    def evaluatePostfix(self, postfixExpression):
+    def evaluatePostfix(self, postfixExpression, cellValues):
         """
         Evaluates the postfix expression and returns the result.
 
         :param postfixExpression: A list of tokens in postfix notation.
+        :param cellValues: A dictionary containing cell values for variables.
         :return: The evaluated result.
 
         Exceptional Situations:
@@ -148,6 +153,16 @@ class PostfixEvaluator:
             for token in postfixExpression:
                 if token["type"] == "operand":
                     stack.append(token["value"])
+                elif token["type"] == "variable":
+                    if token["value"] not in cellValues:
+                        raise EvaluationException(f"Cell {token['value']} is undefined.")
+                    stack.append(cellValues[token["value"]])
+                elif token["type"] == "function":
+                    if token["value"] == "MAX":
+                        args = []
+                        while stack and isinstance(stack[-1], (int, float)):
+                            args.append(stack.pop())
+                        stack.append(max(args))
                 elif token["type"] == "operator":
                     b = stack.pop()
                     a = stack.pop()
@@ -165,17 +180,6 @@ class PostfixEvaluator:
         except Exception as e:
             raise EvaluationException(f"Error during evaluation: {str(e)}")
 
-    def pushTokenToStack(self, stack, token):
-        """
-        Pushes valid operands to the stack.
-
-        :param stack: The stack to push the token onto.
-        :param token: The token to push.
-        """
-        if token["type"] != "operand":
-            raise InvalidContentsException("Only operands can be pushed to the stack.")
-        stack.append(token["value"])
-
 
 class EvaluationException(Exception):
     """
@@ -184,18 +188,13 @@ class EvaluationException(Exception):
     pass
 
 
-class InvalidContentsException(Exception):
-    """
-    Exception raised when invalid contents are encountered.
-    """
-    pass
-
-def computeFormula(formula: str):
+def computeFormula(formula: str, cellValues: dict):
     """
     Computes the result of a formula by tokenizing, parsing, converting to postfix,
     and evaluating it.
 
     :param formula: The formula string to compute.
+    :param cellValues: A dictionary containing cell values for variables.
     :return: The computed result.
     """
     try:
@@ -215,7 +214,7 @@ def computeFormula(formula: str):
         postfix_tokens = postfix_generator.reorderTokens(categorized_tokens)
 
         # Step 4: Evaluate the postfix expression
-        result = evaluator.evaluatePostfix(postfix_tokens)
+        result = evaluator.evaluatePostfix(postfix_tokens, cellValues)
         return result
 
     except (TokenizerException, InvalidFormulaSintaxException, EvaluationException) as e:
