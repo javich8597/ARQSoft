@@ -1,11 +1,12 @@
-from .Content import Content
-from ..FormulaManager.FormulaProcessing import FormulaProcessing
+from ContentHandler.Models.Content import Content
+from code.FormulaManager.FormulaProcessing import computeFormula
+from code.Spreadsheet import Spreadsheet
 
 class FormulaContent(Content):
     def __init__(self, formula: str):
         super().__init__('formula', formula)
         self.formula = formula
-        self.spreadsheet = spreadsheet  # Referencia al sistema de gestión de celdas
+        self.spreadsheet = Spreadsheet  # Referencia al sistema de gestión de celdas
 
     def calculateFormula(self):
         try:

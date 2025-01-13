@@ -1,7 +1,8 @@
-from ..code.Spreadsheet import Spreadsheet
-from ..code.SpreadsheetLoader import SpreadsheetLoader
-from ..code.SpreadsheetSaver import SpreadsheetSaver
-from ..ui.UserInterface import UserInterface
+from code.Cell import Cell
+from code.Spreadsheet import Spreadsheet
+from code.SpreadsheetLoader import SpreadsheetLoader
+from code.SpreadsheetSaver import SpreadsheetSaver
+from ui.UserInterface import UserInterface
 
 class SpreadsheetController:
     def __init__(self):

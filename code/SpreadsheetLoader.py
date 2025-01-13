@@ -1,4 +1,4 @@
-from Spreadsheet import Spreadsheet
+from code.Spreadsheet import Spreadsheet
 
 class SpreadsheetLoader:
     @staticmethod

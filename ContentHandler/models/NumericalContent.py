@@ -1,4 +1,4 @@
-from .Content import Content
+from ContentHandler.Models.Content import Content
 
 class NumericalContent(Content):
     def __init__(self, number: float):

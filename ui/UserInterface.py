@@ -1,4 +1,4 @@
-from ..Controllers.SpreadsheetController import SpreadsheetController
+from Controllers.SpreadsheetController import SpreadsheetController
 
 class UserInterface:
     """

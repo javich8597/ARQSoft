@@ -1,4 +1,4 @@
-from Cell import Cell
+from code.Cell import Cell
 
 class Spreadsheet:
     def __init__(self):
