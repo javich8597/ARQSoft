@@ -1,16 +1,18 @@
 from ContentHandler.Models.Content import Content
 from code.FormulaManager.FormulaProcessing import computeFormula
-from code.Spreadsheet import Spreadsheet
+#from code.Spreadsheet import Spreadsheet
+#from code.DependencyManager import DependencyManager
 
 class FormulaContent(Content):
-    def __init__(self, formula: str):
+    def __init__(self, formula: str, dependencyManager):
         super().__init__('formula', formula)
         self.formula = formula
-        self.spreadsheet = Spreadsheet  # Referencia al sistema de gestión de celdas
+        self.dependencyManager = dependencyManager
+        
 
     def calculateFormula(self):
         try:
-            cell_values = self.spreadsheet.getCellValues()
+            cell_values = self.dependencyManager.getCellValues()
             result = computeFormula(self.formula, cell_values)
             self.textualvalue = str(result)
             return result

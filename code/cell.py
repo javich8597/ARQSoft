@@ -25,7 +25,7 @@ class Cell:
         if isinstance(content, (int, float)):
             return NumericalContent(content)
         elif isinstance(content, str) and content.startswith("="):
-            return FormulaContent(content[1:])
+            return FormulaContent(content[1:], None)
         else:
             return TextualContent(content)
 

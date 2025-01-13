@@ -1,4 +1,3 @@
-from Controllers.SpreadsheetController import SpreadsheetController
 
 class UserInterface:
     """

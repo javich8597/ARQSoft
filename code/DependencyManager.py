@@ -1,3 +1,5 @@
+from code.Spreadsheet import Spreadsheet
+
 class DependencyManager:
     """
     Manages cell dependencies and ensures no circular references exist.
@@ -8,6 +10,8 @@ class DependencyManager:
         Initializes the dependency manager with an empty dependency graph.
         """
         self.dependency_graph = {}
+        self.Spreadsheet = Spreadsheet()
+
 
     def addDependency(self, cell: str, dependencies: list):
         """
@@ -60,6 +64,9 @@ class DependencyManager:
         except CircularDependencyException as e:
             print(e)
             return False
+        
+    def getCellValues(self):
+        return self.Spreadsheet.getCellValues()
 
 class CircularDependencyException(Exception):
     """
