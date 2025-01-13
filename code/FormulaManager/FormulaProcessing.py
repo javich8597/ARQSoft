@@ -190,3 +190,34 @@ class InvalidContentsException(Exception):
     """
     pass
 
+def computeFormula(formula: str):
+    """
+    Computes the result of a formula by tokenizing, parsing, converting to postfix,
+    and evaluating it.
+
+    :param formula: The formula string to compute.
+    :return: The computed result.
+    """
+    try:
+        tokenizer = Tokenizer()
+        parser = Parser()
+        postfix_generator = PostfixGenerator()
+        evaluator = PostfixEvaluator()
+
+        # Step 1: Tokenize the formula
+        tokens = tokenizer.tokenize(formula)
+
+        # Step 2: Parse the tokens to check syntax
+        parser.parse(tokens)
+
+        # Step 3: Convert tokens to postfix notation
+        categorized_tokens = postfix_generator.convertToOperandsAndOperators(tokens)
+        postfix_tokens = postfix_generator.reorderTokens(categorized_tokens)
+
+        # Step 4: Evaluate the postfix expression
+        result = evaluator.evaluatePostfix(postfix_tokens)
+        return result
+
+    except (TokenizerException, InvalidFormulaSintaxException, EvaluationException) as e:
+        print(f"Error computing formula: {str(e)}")
+        return None
