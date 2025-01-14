@@ -1,6 +1,6 @@
 import os
 
-from Controllers.SpreadsheetController import SpreadsheetController
+from controllers.SpreadsheetController import SpreadsheetController
 
 
 def main():
@@ -8,8 +8,10 @@ def main():
     while True:
         try:
             spreadsheetcontroller.showMenu()
-        except Exception as Error:
-            print(Error.message)
+        except Exception as error:
+            #print(Error.message)
+            #print(str(Error))
+            print(f"Error: {error}")
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,4 @@
-from ContentHandler.Models.Content import Content
+from contentHandler.models.Content import Content
 from code.FormulaManager.FormulaProcessing import computeFormula
 #from code.Spreadsheet import Spreadsheet
 #from code.DependencyManager import DependencyManager
