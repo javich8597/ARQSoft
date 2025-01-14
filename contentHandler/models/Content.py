@@ -15,8 +15,5 @@ class Content(ABC):
     def getTextualValue(self):
         pass
     
-    def getValue(self) -> str:
-        return self.textualvalue
-    
     def typeContent(self) -> str:
         return self.type

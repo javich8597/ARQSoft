@@ -39,6 +39,12 @@ class Cell:
         """
         Sets the coordinates of the cell composed by row and column.
         """
+
+        if not isinstance(row, int) or row <= 0:
+            raise ValueError("Row must be a positive integer.")
+        if not isinstance(col, str) or not col.isalpha():
+            raise ValueError("Column must be a string containing only letters.")
+        
         self.row = row
         self.col = col
 

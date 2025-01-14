@@ -9,8 +9,6 @@ def main():
         try:
             spreadsheetcontroller.showMenu()
         except Exception as error:
-            #print(Error.message)
-            #print(str(Error))
             print(f"Error: {error}")
 
 if __name__ == "__main__":

@@ -22,7 +22,7 @@ class FormulaContent(Content):
             return None
 
     def getTextualValue(self):
-        return self.getValue()
+        return self.textualvalue
 
     def get_content(self):
         return f"Fórmula: {self.formula}"
