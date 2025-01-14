@@ -38,7 +38,7 @@ class SpreadsheetController:
     def showMenu(self):
         self.userInterface.displayMenu()
         command = self.userInterface.getUserChoice()
-        self.processCommand(self, command)
+        self.processCommand(command)
 
     def processCommand(self, command: str):
         """
