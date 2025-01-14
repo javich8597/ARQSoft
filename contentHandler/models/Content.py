@@ -14,6 +14,7 @@ class Content(ABC):
     @abstractmethod
     def getTextualValue(self):
         pass
-    
-    def typeContent(self) -> str:
-        return self.type
+
+    def getValue(self) -> str:
+        return self.textualvalue
+

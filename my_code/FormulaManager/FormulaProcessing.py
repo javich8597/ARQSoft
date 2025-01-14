@@ -1,3 +1,4 @@
+import re
 class Tokenizer:
     """
     Tokenizes formulas into a sequence of tokens.

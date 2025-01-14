@@ -1,7 +1,5 @@
 from contentHandler.models.Content import Content
-from code.FormulaManager.FormulaProcessing import computeFormula
-#from code.Spreadsheet import Spreadsheet
-#from code.DependencyManager import DependencyManager
+from my_code.FormulaManager.FormulaProcessing import computeFormula
 
 class FormulaContent(Content):
     def __init__(self, formula: str, dependencyManager):
@@ -22,7 +20,7 @@ class FormulaContent(Content):
             return None
 
     def getTextualValue(self):
-        return self.textualvalue
+        return self.getValue()
 
     def get_content(self):
         return f"Fórmula: {self.formula}"

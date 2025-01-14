@@ -30,7 +30,7 @@ class UserInterface:
         Gets the user choice from the menu.
         """
         choice = input("Enter your choice: ").strip()
-        if choice not in self.options:
+        if choice.split()[0] not in self.options:  
             print("Invalid choice. Please try again.")
             return None
         return choice

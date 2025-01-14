@@ -1,4 +1,4 @@
-from code.Spreadsheet import Spreadsheet
+from my_code.Spreadsheet import Spreadsheet
 
 class DependencyManager:
     """
