@@ -21,8 +21,17 @@ class Spreadsheet:
         
     def set_cell_content(self, coordinate, content):
         if coordinate not in self.cells:
-            self.cells[coordinate] = Cell()
+            col, row = self._split_coordinate(coordinate)
+            self.cells[coordinate] = Cell(row=row, col=col)
         self.cells[coordinate].setContent(content)
+
+    def _split_coordinate(self, coordinate):
+        import re
+        match = re.match(r"^([A-Z]+)(\d+)$", coordinate)
+        if not match:
+            raise ValueError(f"Invalid coordinate format: {coordinate}")
+        col, row = match.groups()
+        return col, int(row)
 
     def get_cell_content(self, coordinate):
         if coordinate in self.cells:
@@ -32,7 +41,7 @@ class Spreadsheet:
 
     def get_cell_value(self, coordinate):
         if coordinate in self.cells:
-            return self.cells[coordinate].get_value()
+            return self.cells[coordinate].getValue()
         else:
             raise ValueError(f"Cell at {coordinate} does not exist.")
 
@@ -48,11 +57,11 @@ class Spreadsheet:
     def display_spreadsheet(self):
         # A simple way to display the spreadsheet
         rows = {}
-        for coord, cell in self.cells.items():
+        for coord, Cell in self.cells.items():
             row, col = self._split_coordinate(coord)
             if row not in rows:
                 rows[row] = {}
-            rows[row][col] = cell.get_value() if cell.get_value() else ""
+            rows[row][col] = Cell.getValue() if Cell.getValue() else ""
         
         # Print the table-like structure
         all_rows = sorted(rows.keys(), key=lambda x: int(x))
