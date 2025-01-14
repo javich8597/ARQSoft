@@ -1,6 +1,6 @@
 import os
 
-from Controllers.SpreadsheetController import SpreadsheetController
+from ARQSoft.Controllers.SpreadsheetController import SpreadsheetController
 
 
 def main():

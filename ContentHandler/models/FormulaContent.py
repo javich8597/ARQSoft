@@ -1,5 +1,5 @@
-from ContentHandler.Models.Content import Content
-from code.FormulaManager.FormulaProcessing import computeFormula
+from ..Models.Content import Content
+from ARQSoft.my_code.FormulaManager.FormulaProcessing import computeFormula
 #from code.Spreadsheet import Spreadsheet
 #from code.DependencyManager import DependencyManager
 

@@ -1,4 +1,4 @@
-from code.Spreadsheet import Spreadsheet
+from ARQSoft.my_code.Spreadsheet import Spreadsheet
 
 class SpreadsheetLoader:
     @staticmethod

@@ -1,7 +1,8 @@
-from code.Spreadsheet import Spreadsheet
-from code.SpreadsheetLoader import SpreadsheetLoader
-from code.SpreadsheetSaver import SpreadsheetSaver
-from ui.UserInterface import UserInterface
+
+from ARQSoft.my_code.Spreadsheet import Spreadsheet
+from ARQSoft.my_code.SpreadsheetLoader import SpreadsheetLoader
+from ARQSoft.my_code.SpreadsheetSaver import SpreadsheetSaver
+from ARQSoft.ui.UserInterface import UserInterface
 
 class SpreadsheetController:
     def __init__(self):
@@ -41,7 +42,7 @@ class SpreadsheetController:
     def showMenu(self):
         self.userInterface.displayMenu()
         command = self.userInterface.getUserChoice()
-        self.processCommand(self, command)
+        self.processCommand(command)
 
     def processCommand(self, command: str):
         """
@@ -63,6 +64,7 @@ class SpreadsheetController:
                 print("Error: Missing arguments for E command.")
             else:
                 self.spreadsheet.edit_cell(parts[1], parts[2])
+                self.printSpreadsheet()
         elif cmd == "L":
             if len(parts) < 2:
                 print("Error: Missing file path for L command.")
@@ -88,3 +90,33 @@ class SpreadsheetController:
                     self.processCommand(line.strip())
         except FileNotFoundError:
             print(f"Error: File not found at {file_path}.")
+
+    #Print por la terminal toda la informacion de la celda
+    def printSpreadsheet(self):
+        """
+        Prints the spreadsheet in a format similar to an Excel sheet.
+        """
+        # Obtener los límites
+        min_row, max_row, min_col, max_col = self.spreadsheet.getBoundaries()
+
+        # Generar los encabezados de columnas (sin conversiones)
+        col_headers = []
+        current_col = min_col
+        while current_col <= max_col:
+            col_headers.append(current_col)
+            current_col = chr(ord(current_col) + 1)
+
+        # Imprimir encabezado de columnas
+        print("    ", end="")  # Espacio inicial para el encabezado de filas
+        for header in col_headers:
+            print(f"{header:^10}", end="")  # Encabezados centrados
+        print()
+
+        # Imprimir las filas y contenido
+        for row in range(min_row, max_row + 1):
+            print(f"{row:<4}", end="")  # Número de fila alineado a la izquierda
+            for col in col_headers:
+                cell_content = self.spreadsheet.get_cell_content(f"{col}{row}")
+                cell_value = cell_content.getValue() if cell_content else ""
+                print(f"{cell_value:^10}", end="")  # Contenido de la celda centrado
+            print()  # Nueva línea al final de cada fila

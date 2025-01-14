@@ -1,6 +1,6 @@
-from ContentHandler.Models.NumericalContent import NumericalContent
-from ContentHandler.Models.FormulaContent import FormulaContent
-from ContentHandler.Models.TextualContent import TextualContent
+from ..ContentHandler.Models.NumericalContent import NumericalContent
+from ..ContentHandler.Models.FormulaContent import FormulaContent
+from ..ContentHandler.Models.TextualContent import TextualContent
 
 class Cell:
     """

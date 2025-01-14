@@ -1,4 +1,5 @@
-from code.Cell import Cell
+from .Cell import Cell
+import re
 
 class Spreadsheet:
     def __init__(self):
@@ -12,14 +13,21 @@ class Spreadsheet:
         
     def set_cell_content(self, coordinate, content):
         if coordinate not in self.cells:
-            self.cells[coordinate] = Cell()
+            match = re.match(r"([A-Z]+)(\d+$)", coordinate)
+            if not match:
+                raise ValueError(f"Invalid coordinate format: {coordinate}")
+            col = match.group(1)
+            row = match.group(2)
+            self.cells[coordinate] = Cell(col, row)
         self.cells[coordinate].setContent(content)
 
     def get_cell_content(self, coordinate):
         if coordinate in self.cells:
-            return self.cells[coordinate].get_content()
+            return self.cells[coordinate].getContent()
         else:
-            raise ValueError(f"Cell at {coordinate} does not exist.")
+            return None
+        #ValueError(f"Cell at {coordinate} does not exist.") we need this?
+
 
     def get_cell_value(self, coordinate):
         if coordinate in self.cells:
@@ -29,7 +37,6 @@ class Spreadsheet:
 
     def _validate_coordinates(self, coordinate):
         # Validate coordinates like "A1", "B2", etc.
-        import re
         return bool(re.match(r"^[A-Z]+\d+$", coordinate))
 
     def display_spreadsheet(self):
@@ -59,3 +66,27 @@ class Spreadsheet:
         # Devuelve un diccionario con los valores de las celdas
         return {cell.getCoordinate(): cell.getValue() for cell in self.cells}
         #FALTA UN RANGO??
+
+    def getBoundaries(self):
+        """
+        Gets the boundaries of the spreadsheet based on the initialized cells.
+
+        :return: Tuple (min_row, max_row, min_col, max_col).
+        """
+        if not self.cells:
+            return 1, 1, "A", "A"  # Default boundaries for an empty spreadsheet
+
+        rows = []
+        cols = []
+
+        for coord in self.cells.keys():
+            col, row = "", ""
+            for char in coord:
+                if char.isdigit():
+                    row += char
+                else:
+                    col += char
+            rows.append(int(row))
+            cols.append(col)
+
+        return min(rows), max(rows), min(cols), max(cols)
