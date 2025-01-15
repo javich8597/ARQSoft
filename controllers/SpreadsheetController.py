@@ -8,9 +8,22 @@ class SpreadsheetController:
     def __init__(self):
         self.spreadsheet = Spreadsheet()
         self.userInterface = UserInterface()
-        self.dependencyManager = DependencyManager()
 
-    def edit_cell_content(self, coordinate, content):
+#    def load_spreadsheet(self, file_path):
+#        try:
+#            self.spreadsheet = SpreadsheetLoader.load_spreadsheet(file_path)
+#            print(f"Hoja de cálculo cargada desde {file_path}")
+#        except Exception as e:
+#            print(f"Error al cargar la hoja de cálculo: {e}")
+
+#    def save_spreadsheet(self, file_path):
+#        try:
+#            SpreadsheetSaver.save_spreadsheet(file_path, self.spreadsheet)
+#            print(f"Hoja de cálculo guardada en {file_path}")
+#        except Exception as e:
+#            print(f"Error al guardar la hoja de cálculo: {e}")
+
+    def set_cell_content(self, coordinate, content):
         try:
             # Javi:Previous validation for empty content or coordinate before setting the content
             if not coordinate or not content:
@@ -21,7 +34,7 @@ class SpreadsheetController:
                 dependencies = self.dependencyManager.extractDependencies(content)
                 self.dependencyManager.addDependency(coordinate, dependencies)
 
-            self.spreadsheet.edit_cell(coordinate, content)
+            self.spreadsheet.set_cell_content(coordinate, content)
             print(f"Contenido de la celda {coordinate} establecido a {content}")
         except Exception as e:
             print(f"Error al establecer el contenido de la celda: {e}")
@@ -56,13 +69,11 @@ class SpreadsheetController:
             elif cmd == "C":
                 self.spreadsheet = Spreadsheet()
                 print("Nueva hoja de cálculo creada")
-                self.spreadsheet.display_spreadsheet()
             elif cmd == "E":
                 if len(parts) < 3:
                     print("Error: Missing arguments for E command.")
                 else:
-                    self.edit_cell_content(parts[1], parts[2])
-                    #self.spreadsheet.display_spreadsheet()
+                    self.spreadsheet.edit_cell(parts[1], parts[2])
                     self.printSpreadsheet()
             elif cmd == "L":
                 if len(parts) < 2:

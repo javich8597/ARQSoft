@@ -16,7 +16,7 @@ class Spreadsheet:
         if not self._validate_coordinates(coordinate):
             raise ValueError("Invalid cell coordinates.")
         if not self._validate_content(content):
-            raise ValueError("Invalid content type. Supported types are: str, int, float.")
+           raise ValueError("Invalid content type. Supported types are: str, int, float.")
         print(f"Editing cell {coordinate} with new content: {content}")
         self.set_cell_content(coordinate, content)
         
@@ -26,9 +26,7 @@ class Spreadsheet:
             if not match:
                 raise ValueError(f"Invalid coordinate format: {coordinate}")
             col, row = match.groups()
-           #col = match.group(1)
-           #row = match.group(2)
-            self.cells[coordinate] = Cell(row, col)
+            self.cells[coordinate] = Cell(col, row)
         #ERROR AQUI
         self.cells[coordinate].setContent(content)
 
@@ -44,11 +42,12 @@ class Spreadsheet:
         if coordinate in self.cells:
             return self.cells[coordinate].getContent()
         else:
-            raise ValueError(f"Cell at {coordinate} does not exist.")
             return None
+        #ValueError(f"Cell at {coordinate} does not exist.") we need this?
 
     def get_cell_value(self, coordinate):
         if coordinate in self.cells:
+            #ERROR AQUI
             return self.cells[coordinate].getValue()
         else:
             raise ValueError(f"Cell at {coordinate} does not exist.")
@@ -64,18 +63,18 @@ class Spreadsheet:
     def display_spreadsheet(self):
         # A simple way to display the spreadsheet
         rows = {}
-        for coord, Cell in self.cells.items():
+        for coord, cell in self.cells.items():
             row, col = self._split_coordinate(coord)
             if row not in rows:
                 rows[row] = {}
-            rows[row][col] = Cell.getValue() if Cell.getValue() else ""
+            rows[row][col] = cell.get_value() if cell.get_value() else ""
         
         # Print the table-like structure
-        all_rows = sorted(rows.keys(), key=lambda x: int(x))
+        #all_rows = sorted(rows.keys(), key=lambda x: int(x))
         all_cols = sorted({col for row in rows.values() for col in row.keys()})
         print("\t" + "\t".join(all_cols))
-        #for row in sorted(rows.keys()):
-        for row in all_rows:
+        for row in sorted(rows.keys()):
+        #for row in all_rows:
             print(row + "\t" + "\t".join(rows[row].get(col, "") for col in all_cols))
 
     def _split_coordinate(self, coordinate):
@@ -93,8 +92,7 @@ class Spreadsheet:
         for coord, cell in self.cells.items():
             value = cell.getValue()
             result[coord] = value if value is not None else ""
-        return result
-        #FALTA UN RANGO??
+        return result        #FALTA UN RANGO??
 
     def getBoundaries(self):
         """

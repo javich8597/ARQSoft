@@ -1,3 +1,4 @@
+import re 
 class PostfixGenerator:
     def convertToOperandsAndOperators(self, tokens):
         categorized = []

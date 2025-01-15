@@ -29,10 +29,16 @@ class UserInterface:
         """
         Gets the user choice from the menu.
         """
-        choice = input("Enter your choice: ").strip()
-        if choice.split()[0] not in self.options:  
+        #choice = input("Enter your choice: ").strip()
+        #if choice.split()[0] not in self.options:  
+        user_input = input("Enter your choice: ").strip()
+        parts = user_input.split(maxsplit=1)
+        if not parts:
+            print("No input provided. Please try again.")
+            return None
+        command = parts[0]
+        if command not in self.options:
             print("Invalid choice. Please try again.")
             return None
-        return choice
+        return user_input
 
-#Print por la terminal toda la informacion de la celda
