@@ -17,6 +17,3 @@ class Content(ABC):
     
     def getValue(self) -> str:
         return self.textualvalue
-    
-    def typeContent(self) -> str:
-        return self.type

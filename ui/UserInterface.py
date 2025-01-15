@@ -29,6 +29,8 @@ class UserInterface:
         """
         Gets the user choice from the menu.
         """
+        #choice = input("Enter your choice: ").strip()
+        #if choice.split()[0] not in self.options:  
         user_input = input("Enter your choice: ").strip()
         parts = user_input.split(maxsplit=1)
         if not parts:

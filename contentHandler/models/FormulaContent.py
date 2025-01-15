@@ -1,7 +1,5 @@
-from ..Models.Content import Content
-from ARQSoft.my_code.FormulaManager.FormulaProcessing import computeFormula
-#from code.Spreadsheet import Spreadsheet
-#from code.DependencyManager import DependencyManager
+from contentHandler.models.Content import Content
+from my_code.FormulaManager.FormulaProcessing import computeFormula
 
 class FormulaContent(Content):
     def __init__(self, formula: str, dependencyManager):
