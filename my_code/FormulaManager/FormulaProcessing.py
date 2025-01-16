@@ -16,10 +16,16 @@ class Tokenizer:
         """
         import re
         try:
+            # Remove '=' at the start of the formula if it exists
+            if formula.startswith("="):
+                formula = formula[1:]
+
             pattern = r"[A-Za-z]+\d+|\d+\.\d+|\d+|[+\-*/()=]|SUMA|PROMEDIO|MIN|MAX"
             tokens = re.findall(pattern, formula)
+
             if not tokens:
                 raise TokenizerException("No valid tokens found.")
+
             return tokens
         except Exception as e:
             raise TokenizerException(f"Error tokenizing formula: {str(e)}")
@@ -112,8 +118,8 @@ class PostfixGenerator:
         for token in tokens:
             if token["type"] in ["operand", "variable"]:
                 output.append(token)
-            elif token["type"] == "operator":
-                while stack and precedence[stack[-1]["value"]] >= precedence[token["value"]]:
+            elif token["type"] == "operator" and token["value"] != '=':  # Ignorar el '='
+                while stack and stack[-1]["type"] == "operator" and precedence.get(stack[-1]["value"], 0) >= precedence.get(token["value"], 0):
                     output.append(stack.pop())
                 stack.append(token)
             elif token["type"] == "function":
@@ -129,6 +135,7 @@ class PostfixGenerator:
             output.append(stack.pop())
 
         return output
+
 
 
 class PostfixEvaluator:
@@ -165,8 +172,12 @@ class PostfixEvaluator:
                             args.append(stack.pop())
                         stack.append(max(args))
                 elif token["type"] == "operator":
+                    if len(stack) < 2:
+                        raise EvaluationException(f"Insufficient operands for operator '{token['value']}'")
                     b = stack.pop()
                     a = stack.pop()
+                    if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
+                        raise EvaluationException(f"Operands must be numbers, got {type(a)} and {type(b)}")
                     if token["value"] == '+':
                         stack.append(a + b)
                     elif token["value"] == '-':
@@ -177,9 +188,12 @@ class PostfixEvaluator:
                         if b == 0:
                             raise EvaluationException("Division by zero.")
                         stack.append(a / b)
+            if len(stack) != 1:
+                raise EvaluationException(f"Invalid postfix expression: stack={stack}")
             return stack.pop()
         except Exception as e:
             raise EvaluationException(f"Error during evaluation: {str(e)}")
+
 
 
 class EvaluationException(Exception):

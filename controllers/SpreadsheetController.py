@@ -1,7 +1,7 @@
 from my_code.Spreadsheet import Spreadsheet
 from my_code.SpreadsheetLoader import SpreadsheetLoader
 from my_code.SpreadsheetSaver import SpreadsheetSaver
-from my_code.DependencyManager import DependencyManager
+#from my_code.DependencyManager import DependencyManager
 from ui.UserInterface import UserInterface
 
 class SpreadsheetController:
@@ -89,6 +89,8 @@ class SpreadsheetController:
                 print(f"Error: Unknown command {cmd}.")
         except Exception as e:
             print(f"Error al procesar el comando {cmd}: {e}")
+            import traceback
+            traceback.print_exc()
 
     def readCommandsFromFile(self, file_path: str):
         """

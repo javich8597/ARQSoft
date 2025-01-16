@@ -2,15 +2,15 @@ from contentHandler.models.Content import Content
 from my_code.FormulaManager.FormulaProcessing import computeFormula
 
 class FormulaContent(Content):
-    def __init__(self, formula: str, dependencyManager):
+    def __init__(self, formula: str, spreadsheet) -> None:
         super().__init__('formula', formula)
         self.formula = formula
-        self.dependencyManager = dependencyManager
+        self.spreadsheet = spreadsheet
         
 
     def calculateFormula(self):
         try:
-            cell_values = self.dependencyManager.getCellValues()
+            cell_values = self.spreadsheet.getCells() #test
             result = computeFormula(self.formula, cell_values)
             self.textualvalue = str(result)
             return result
