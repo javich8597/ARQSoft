@@ -8,5 +8,5 @@ class TextualContent(Content):
         # Opcionalmente podrías lanzar una excepción o retornar 0
         return 0
 
-    def getTextualValue(self):
-        return self.getValue()
+    def get_content(self):
+        return f"Text: {self.textualvalue}"

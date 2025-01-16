@@ -4,7 +4,7 @@ class SpreadsheetSaver:
         try:
             with open(path, "w") as file:
                 for coord, cell in spreadsheet.cells.items():
-                    file.write(f"{coord}: {cell.get_content()}\n")
+                    file.write(f"{coord}: {cell.get_content().getValue()}\n")
         except Exception as e:
             raise RuntimeError(f"An error occurred while saving the file: {e}")
 

@@ -1,4 +1,5 @@
 from my_code.Cell import Cell
+from contentHandler.models.Content import Content
 import re
 
 class Spreadsheet:
@@ -19,16 +20,16 @@ class Spreadsheet:
            raise ValueError("Invalid content type. Supported types are: str, int, float.")
         print(f"Editing cell {coordinate} with new content: {content}")
         self.set_cell_content(coordinate, content)
-        
+
     def set_cell_content(self, coordinate, content):
         if coordinate not in self.cells:
             match = re.match(r"([A-Z]+)(\d+$)", coordinate)
             if not match:
                 raise ValueError(f"Invalid coordinate format: {coordinate}")
             col, row = match.groups()
-            self.cells[coordinate] = Cell(col, row)
-        #ERROR AQUI
-        self.cells[coordinate].setContent(content)
+            self.cells[coordinate] = Cell(col, row, content)
+        else:
+            self.cells[coordinate].set_content(content)
 
     #def _split_coordinate(self, coordinate):
     #    import re
@@ -38,9 +39,9 @@ class Spreadsheet:
     #    col, row = match.groups()
     #    return col, int(row)
 
-    def get_cell_content(self, coordinate):
+    def get_cell_content(self, coordinate) -> Content:
         if coordinate in self.cells:
-            return self.cells[coordinate].getContent()
+            return self.cells[coordinate].get_content()
         else:
             return None
         #ValueError(f"Cell at {coordinate} does not exist.") we need this?
@@ -55,7 +56,7 @@ class Spreadsheet:
     def _validate_coordinates(self, coordinate):
         # Validate coordinates like "A1", "B2", etc.
         return bool(re.match(r"^[A-Z]+\d+$", coordinate))
-    
+
     def _validate_content(self, content):
         # Validate content type
         return isinstance(content, (str, int, float))
@@ -68,7 +69,7 @@ class Spreadsheet:
             if row not in rows:
                 rows[row] = {}
             rows[row][col] = cell.get_value() if cell.get_value() else ""
-        
+
         # Print the table-like structure
         #all_rows = sorted(rows.keys(), key=lambda x: int(x))
         all_cols = sorted({col for row in rows.values() for col in row.keys()})
@@ -84,7 +85,7 @@ class Spreadsheet:
             return match.groups()
         else:
             raise ValueError("Invalid coordinate format.")
-        
+
     def getCellValues(self):
         # Devuelve un diccionario con los valores de las celdas
         #return {cell.getCoordinate(): cell.getValue() for cell in self.cells}

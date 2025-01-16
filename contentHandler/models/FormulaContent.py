@@ -6,9 +6,14 @@ class FormulaContent(Content):
         super().__init__('formula', formula)
         self.formula = formula
         self.dependencyManager = dependencyManager
-        
 
-    def calculateFormula(self):
+    def getNumericalValue(self) -> float:
+        return self.calculateFormula()
+
+    def get_content(self):
+        return f"Fórmula: {self.formula}"
+
+    def calculateFormula(self) -> float:
         try:
             cell_values = self.dependencyManager.getCellValues()
             result = computeFormula(self.formula, cell_values)
@@ -18,12 +23,3 @@ class FormulaContent(Content):
             print(f"Error al calcular la fórmula: {e}")
             self.textualvalue = None
             return None
-
-    def getTextualValue(self):
-        return self.getValue()
-
-    def get_content(self):
-        return f"Fórmula: {self.formula}"
-
-    def getNumericalValue(self):
-        return self.calculateFormula()

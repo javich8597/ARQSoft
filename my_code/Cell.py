@@ -1,6 +1,7 @@
 from contentHandler.models.NumericalContent import NumericalContent
 from contentHandler.models.FormulaContent import FormulaContent
 from contentHandler.models.TextualContent import TextualContent
+from contentHandler.models.TextualContent import Content
 
 class Cell:
     """
@@ -14,7 +15,7 @@ class Cell:
         self.row = row
         self.col = col
         self.content = self._identify_content(content)  # Raw content of the cell (e.g., number, text, formula)
-        self.value = None  # Evaluated value of the cell (e.g., formula result)
+        self.value = self.content.getNumericalValue()  # Evaluated value of the cell (e.g., formula result)
 
     def _identify_content(self, content):
         """
@@ -44,21 +45,22 @@ class Cell:
             raise ValueError("Row must be a positive integer.")
         if not isinstance(col, str) or not col.isalpha():
             raise ValueError("Column must be a string containing only letters.")
-        
+
         self.row = row
         self.col = col
 
-    def getContent(self):
+    def get_content(self) -> Content:
         """
         Gets the raw content of the cell.
         """
         return self.content
 
-    def setContent(self, content):
+    def set_content(self, content):
         """
         Sets the raw content of the cell.
         """
         self.content = self._identify_content(content)
+        self.value = self.content.getNumericalValue()
 
     def getValue(self):
         """

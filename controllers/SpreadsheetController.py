@@ -2,6 +2,7 @@ from my_code.Spreadsheet import Spreadsheet
 from my_code.SpreadsheetLoader import SpreadsheetLoader
 from my_code.SpreadsheetSaver import SpreadsheetSaver
 from my_code.DependencyManager import DependencyManager
+from contentHandler.models.Content import Content
 from ui.UserInterface import UserInterface
 
 class SpreadsheetController:
@@ -13,7 +14,7 @@ class SpreadsheetController:
     def create_new_spreadsheet(self) -> Spreadsheet:
         self.sheet = Spreadsheet()
         print("* Spreadhseet created!")
-        
+
 #    def load_spreadsheet(self, file_path):
 #        try:
 #            self.spreadsheet = SpreadsheetLoader.load_spreadsheet(file_path)
@@ -33,7 +34,7 @@ class SpreadsheetController:
             # Javi:Previous validation for empty content or coordinate before setting the content
             if not coordinate or not content:
                 raise ValueError("La coordenada o el contenido no pueden estar vacíos.")
-            
+
             # Javi:Update the dpendency manager if the content is a formula
             if isinstance(content, str) and content.startswith("="):
                 dependencies = self.dependencyManager.extractDependencies(content)
@@ -52,7 +53,7 @@ class SpreadsheetController:
         except Exception as e:
             print(f"Error al obtener el contenido de la celda: {e}")
             return None
-        
+
     def showMenu(self):
         self.userInterface.displayMenu()
         command = self.userInterface.getUserChoice()
@@ -78,22 +79,43 @@ class SpreadsheetController:
                 if len(parts) < 3:
                     print("Error: Missing arguments for E command.")
                 else:
-                    self.spreadsheet.edit_cell(parts[1], parts[2])
+                    self.set_cell_content(parts[1], parts[2])
                     self.printSpreadsheet()
             elif cmd == "L":
                 if len(parts) < 2:
                     print("Error: Missing file path for L command.")
                 else:
-                    self.spreadsheet = SpreadsheetLoader.load_spreadsheet(parts[1])
+                    load_spreadsheet_from_file(parts[1])
             elif cmd == "S":
                 if len(parts) < 2:
                     print("Error: Missing file path for S command.")
                 else:
-                    SpreadsheetSaver.save_spreadsheet(parts[1], self.spreadsheet)
+                    save_spreadsheet_to_file(parts[1])
             else:
                 print(f"Error: Unknown command {cmd}.")
         except Exception as e:
             print(f"Error al procesar el comando {cmd}: {e}")
+
+    def set_cell_content(self, coord, str_content):
+        self.spreadsheet.edit_cell(coord, str_content)
+
+    def get_cell_content_as_float(self, coord):
+        content = self.spreadsheet.get_cell_content(coord)
+        return content.getNumericalValue() if content else 0.0
+
+    def get_cell_content_as_string(self, coord):
+        content = self.spreadsheet.get_cell_content(coord)
+        return content.getValue() if content else ""
+
+    def get_cell_formula_expression(self, coord):
+        formula = self.get_cell_content_as_string(coord)
+        return formula.replace("=", "") if formula else ""
+
+    def save_spreadsheet_to_file(self, s_name_in_user_dir):
+        SpreadsheetSaver.save_spreadsheet(s_name_in_user_dir, self.spreadsheet)
+
+    def load_spreadsheet_from_file(self, s_name_in_user_dir):
+        self.spreadsheet = SpreadsheetLoader.load_spreadsheet(s_name_in_user_dir)
 
     def readCommandsFromFile(self, file_path: str):
         """

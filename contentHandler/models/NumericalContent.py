@@ -3,9 +3,10 @@ from contentHandler.models.Content import Content
 class NumericalContent(Content):
     def __init__(self, number: float):
         super().__init__('number', str(number))
+        self.number = number
 
     def getNumericalValue(self):
-        return float(self.textualvalue)
+        return self.number
 
-    def getTextualValue(self):
-        return self.getValue()
+    def get_content(self):
+        return f"Numero: {self.textualvalue}"
