@@ -8,7 +8,12 @@ class SpreadsheetController:
     def __init__(self):
         self.spreadsheet = Spreadsheet()
         self.userInterface = UserInterface()
+        self.sheet: Spreadsheet = None
 
+    def create_new_spreadsheet(self) -> Spreadsheet:
+        self.sheet = Spreadsheet()
+        print("* Spreadhseet created!")
+        
 #    def load_spreadsheet(self, file_path):
 #        try:
 #            self.spreadsheet = SpreadsheetLoader.load_spreadsheet(file_path)

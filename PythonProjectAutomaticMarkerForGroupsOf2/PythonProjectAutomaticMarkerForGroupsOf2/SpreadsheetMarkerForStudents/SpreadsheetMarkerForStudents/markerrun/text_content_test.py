@@ -1,4 +1,12 @@
 import traceback
+
+import sys
+import os
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
+sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append(str(Path(__file__).parent))
+
 from markerrun.ClasesCorrector import SuperClassForTests
 from usecasesmarker.spread_sheet_factory_for_checker import SpreadSheetFactoryForChecker
 
