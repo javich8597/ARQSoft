@@ -18,17 +18,35 @@ class Spreadsheet:
         if not self._validate_content(content):
            raise ValueError("Invalid content type. Supported types are: str, int, float.")
         print(f"Editing cell {coordinate} with new content: {content}")
-        self.set_cell_content(coordinate, content)
+        try:
+            #print(f"Llamando a set_cell_content desde {self.__class__.__name__}")
+            self.set_cell_content(coordinate, content)
+        except Exception as e:
+            print(f"Excepción al llamar a set_cell_content: {e}")
         
     def set_cell_content(self, coordinate, content):
-        if coordinate not in self.cells:
-            match = re.match(r"([A-Z]+)(\d+$)", coordinate)
-            if not match:
-                raise ValueError(f"Invalid coordinate format: {coordinate}")
-            col, row = match.groups()
-            self.cells[coordinate] = Cell(col, row)
-        #ERROR AQUI
-        self.cells[coordinate].setContent(content)
+        #print(f"Creando celda con coordenada {coordinate} y contenido {content}")
+        #print(f"spreadsheet: {self}") 
+        try:
+            #print("Entrando a set_cell_content")  # Esto imprimirá si el método se está ejecutando
+            #print(f"type(self): {type(self)}")
+            #if coordinate not in self.cells: #test
+                match = re.match(r"([A-Z]+)(\d+$)", coordinate)
+                if not match:
+                    raise ValueError(f"Invalid coordinate format: {coordinate}")
+                col, row = match.groups()
+                if len(self.cells)==0 or not coordinate in self.cells:
+                    cell = Cell(col, row, content, self)
+                else:
+                    cell = self.cells[coordinate]
+                
+                cell.insertContent(content)
+                self.cells[coordinate] = cell
+        except Exception as e:
+            print(f"Ocurrió una excepción: {e}")    
+        #self.cells[coordinate] = Cell(col, row, content, self.cells)    
+        #ERROR AQUI - funcion de python?
+        #self.cells[coordinate].setContent(content) hay que usar una funcion en cell para gestionar funciones
 
     #def _split_coordinate(self, coordinate):
     #    import re
@@ -116,3 +134,9 @@ class Spreadsheet:
             cols.append(col)
 
         return min(rows), max(rows), min(cols), max(cols)
+
+    def getCells(self): #test
+        # Si necesitas devolver celdas con valores, puedes llenar self.cells_data aquí
+        # Por ejemplo:
+        self.cells_data = self.cells # O cualquier otra lógica que necesites
+        return self.cells_data  # Devuelves el diccionario de celdas
