@@ -2,7 +2,9 @@ import traceback
 from markerrun.ClasesCorrector import SuperClassForTests
 from usecasesmarker.spread_sheet_factory_for_checker import SpreadSheetFactoryForChecker
 from entities.circular_dependency_exception import CircularDependencyException
-
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 class CircularDependenciesTest(SuperClassForTests):
 
@@ -73,6 +75,7 @@ class CircularDependenciesTest(SuperClassForTests):
             to_throw=self.toThrow(error,to_throw)
             try:
                 self.instance.set_cell_content("A2","=A1+A7+A8")
+                # raise CircularDependencyException("Error")
                 content = self.instance.get_cell_content_as_float("B1")
                 error = self.sAssertTrue(False,0,"Cell A1 contains the formula =A2+A3+A4+A5, and now a try has been done to " \
                                          +"set cell A2 to =A1+A7+A8. This introduces a direct circular dependency that your program should have detected and the " \
@@ -100,6 +103,7 @@ class CircularDependenciesTest(SuperClassForTests):
         try:
             print("\tCase 1: a change is introduced in a cell that does not introduce a circular dependency. Value: " + str(valor_total*0.3))
             try:
+                print(self.instance.sheet.to_dataframe())
                 self.instance.set_cell_content("A11","=A2+A5")
                 error = self.sAssertTrue(True, valor_total * 0.3, "")
                 to_throw=self.toThrow(error,to_throw)

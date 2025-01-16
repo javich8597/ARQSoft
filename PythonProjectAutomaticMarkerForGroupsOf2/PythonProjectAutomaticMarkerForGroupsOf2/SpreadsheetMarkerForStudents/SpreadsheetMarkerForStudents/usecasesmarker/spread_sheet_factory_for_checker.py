@@ -1,4 +1,11 @@
+
+import sys
+import os
 from usecasesmarker.spreadsheet_controller_for_checker import ISpreadsheetControllerForChecker
+sys.path.append(os.path.join("../../",os.getcwd()))
+print(sys.path)
+from controllers.SpreadsheetController import SpreadsheetController
+
 
 class SpreadSheetFactoryForChecker:
 
@@ -13,6 +20,9 @@ class SpreadSheetFactoryForChecker:
 
     def create_spreadsheet_controller() -> ISpreadsheetControllerForChecker:
         #REPLACE THE FOLLOWING CODE!!!
+        controller = SpreadsheetController()
+        controller.create_new_spreadsheet()
+        return controller
         raise Exception("SpreadsheetFactoryForChecker::" \
                         + "create_spreadsheet_controller(). You MUST implement the code of " \
                         + "this method in this class. The code MUST create a class that " \

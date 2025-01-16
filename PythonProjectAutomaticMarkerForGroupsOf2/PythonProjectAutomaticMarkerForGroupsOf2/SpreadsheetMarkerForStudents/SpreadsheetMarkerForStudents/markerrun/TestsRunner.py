@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 import importlib
 
+import sys
+import os
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
+sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append(str(Path(__file__).parent))
+
+
 from ClasesCorrector import SuperClassForTests
 
 class TestRunner:
@@ -9,13 +17,13 @@ class TestRunner:
 
     def __init__(self):
         self.toBeRun = [
-"markerrun.text_content_test.TextContentTest", \
-"markerrun.number_content_test.NumberContentTest", \
-"markerrun.formula_content_test.FormulaContentTest", \
-"markerrun.dependent_cells_test.DependentCellsTest", \
-"markerrun.circular_dependencies_test.CircularDependenciesTest", \
-"markerrun.save_test.SaveTest", \
-"markerrun.load_test.LoadTest" \
+            "markerrun.text_content_test.TextContentTest", \
+            "markerrun.number_content_test.NumberContentTest", \
+            "markerrun.formula_content_test.FormulaContentTest", \
+            "markerrun.dependent_cells_test.DependentCellsTest", \
+            "markerrun.circular_dependencies_test.CircularDependenciesTest", \
+            "markerrun.save_test.SaveTest", \
+            "markerrun.load_test.LoadTest" \
             ]
         self.porcentajes = [3,3,39,15,10,12.5,12.5]
         self.clasesAPorcentajes = {} #mapa <string (clase),float (porcentaje)>
