@@ -1,30 +1,48 @@
+from my_code.FormulaManager.FormulaProcessing import computeFormula
+from my_code.DependencyManager import DependencyManager
 from my_code.Cell import Cell
 import re
 
 class Spreadsheet:
     def __init__(self):
         self.cells = {}
-        # Javi: Rango de celdas predefinido si o no?
-        #def __init__(self, rows=10, cols=10):
-        #self.cells = {}
-        #for row in range(1, rows + 1):
-        #    for col in range(1, cols + 1):
-        #        coordinate = f"{chr(64 + col)}{row}"
-        #        self.cells[coordinate] = Cell()
+        self.dependency_manager = DependencyManager()
+
 
     def edit_cell(self, coordinate, content):
         if not self._validate_coordinates(coordinate):
-            raise ValueError("Invalid cell coordinates.")
+            raise ValueError(f"Invalid coordinate : {coordinate}")
         if not self._validate_content(content):
            raise ValueError("Invalid content type. Supported types are: str, int, float.")
-        print(f"Editing cell {coordinate} with new content: {content}")
-        self.set_cell_content(coordinate, content)
+        
+        if isinstance(content, str) and content.startswith("="):
+            from contentHandler.models.FormulaContent import FormulaContent
+
+            #dependencies = self.dependency_manager.extract_dependencies(content)
+            #self.dependency_manager.add_dependency(coordinate, dependencies)
+            
+            formula_content = FormulaContent(content[1:], self.dependency_manager)
+            dependencies = formula_content.extractDependencies()
+
+            if not self.dependency_manager.checkCircularDependency(coordinate, dependencies):
+                raise ValueError(f"Circular dependency detected for cell {coordinate}.")
+            
+
+            self.dependency_manager.addDependency(coordinate, dependencies)
+            cell_values = {coord: cell.getValue() for coord, cell in self.cells.items()}
+            value = formula_content.calculateFormula(cell_values)
+            self.set_cell_content(coordinate, formula_content)
+            self.cells[coordinate].setValue(value)
+        else:
+            print(f"Editing cell {coordinate} with new content: {content}")
+            self.set_cell_content(coordinate, content)
+            self.cells[coordinate].setValue(content)
         
     def set_cell_content(self, coordinate, content):
         if coordinate not in self.cells:
             match = re.match(r"([A-Z]+)(\d+$)", coordinate)
             if not match:
-                raise ValueError(f"Invalid coordinate format: {coordinate}")
+                raise ValueError(f"Invalid coordinate : {coordinate}")
             col, row = match.groups()
             self.cells[coordinate] = Cell(col, row)
         #ERROR AQUI

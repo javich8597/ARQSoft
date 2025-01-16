@@ -1,4 +1,4 @@
-from my_code.Spreadsheet import Spreadsheet
+
 
 class DependencyManager:
     """
@@ -10,7 +10,6 @@ class DependencyManager:
         Initializes the dependency manager with an empty dependency graph.
         """
         self.dependency_graph = {}
-        self.Spreadsheet = Spreadsheet()
 
 
     def addDependency(self, cell: str, dependencies: list):
@@ -35,7 +34,7 @@ class DependencyManager:
         for deps in self.dependency_graph.values():
             deps.discard(cell)
 
-    def checkDependencies(self, cell: str) -> bool:
+    def checkCircularDependency(self, cell: str, dependencies: list) -> bool:
         """
         Checks for circular dependencies starting from a given cell.
 
@@ -65,8 +64,12 @@ class DependencyManager:
             print(e)
             return False
         
-    def getCellValues(self):
-        return self.Spreadsheet.getCellValues()
+    def getCellValues(self, cell_values: dict):
+        """
+        Devuelve un diccionario con los valores de las celdas.
+        :param cell_values: Diccionario con coordenadas como claves y valores de celdas.
+        """
+        return cell_values
 
 class CircularDependencyException(Exception):
     """

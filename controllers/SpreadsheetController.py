@@ -128,6 +128,6 @@ class SpreadsheetController:
             print(f"{row:<4}", end="")  # Número de fila alineado a la izquierda
             for col in col_headers:
                 cell_content = self.spreadsheet.get_cell_content(f"{col}{row}")
-                cell_value = cell_content.getValue() if cell_content else ""
+                cell_value = cell_content.getValue() if cell_content else "" #getValue() de Content.py
                 print(f"{cell_value:^10}", end="")  # Contenido de la celda centrado
             print()  # Nueva línea al final de cada fila

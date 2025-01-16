@@ -1,5 +1,5 @@
 from contentHandler.models.Content import Content
-from my_code.FormulaManager.FormulaProcessing import computeFormula
+import re
 
 class FormulaContent(Content):
     def __init__(self, formula: str, dependencyManager):
@@ -7,10 +7,20 @@ class FormulaContent(Content):
         self.formula = formula
         self.dependencyManager = dependencyManager
         
+    def extractDependencies(self):
+        """
+        Extrae las dependencias de la fórmula (referencias a otras celdas).
 
-    def calculateFormula(self):
+        :return: Lista de coordenadas de celdas referenciadas en la fórmula.
+        """
+        # Expresión regular para identificar celdas (e.g., A1, B2, Z99)
+        pattern = r"[A-Z]+[0-9]+"
+        dependencies = re.findall(pattern, self.formula)
+        return dependencies
+
+    def calculateFormula(self, cell_values):
         try:
-            cell_values = self.dependencyManager.getCellValues()
+            from my_code.FormulaManager.FormulaProcessing import computeFormula
             result = computeFormula(self.formula, cell_values)
             self.textualvalue = str(result)
             return result
