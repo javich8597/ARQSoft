@@ -10,7 +10,7 @@ class SpreadsheetController:
         self.userInterface = UserInterface()
         self.sheet: Spreadsheet = None
 
-    def new_spreadsheet(self) -> Spreadsheet:
+    def create_new_spreadsheet(self) -> Spreadsheet:
         self.sheet = Spreadsheet()
         print("* Spreadhseet created!")
         
