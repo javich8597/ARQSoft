@@ -1,16 +1,10 @@
 from my_code.Cell import Cell
+from contentHandler.models.Content import Content
 import re
 
 class Spreadsheet:
     def __init__(self):
         self.cells = {}
-        # Javi: Rango de celdas predefinido si o no?
-        #def __init__(self, rows=10, cols=10):
-        #self.cells = {}
-        #for row in range(1, rows + 1):
-        #    for col in range(1, cols + 1):
-        #        coordinate = f"{chr(64 + col)}{row}"
-        #        self.cells[coordinate] = Cell()
 
     def edit_cell(self, coordinate, content):
         if not self._validate_coordinates(coordinate):
@@ -25,40 +19,18 @@ class Spreadsheet:
             print(f"Excepción al llamar a set_cell_content: {e}")
         
     def set_cell_content(self, coordinate, content):
-        #print(f"Creando celda con coordenada {coordinate} y contenido {content}")
-        #print(f"spreadsheet: {self}") 
-        try:
-            #print("Entrando a set_cell_content")  # Esto imprimirá si el método se está ejecutando
-            #print(f"type(self): {type(self)}")
-            #if coordinate not in self.cells: #test
-                match = re.match(r"([A-Z]+)(\d+$)", coordinate)
-                if not match:
-                    raise ValueError(f"Invalid coordinate format: {coordinate}")
-                col, row = match.groups()
-                if len(self.cells)==0 or not coordinate in self.cells:
-                    cell = Cell(col, row, content, self)
-                else:
-                    cell = self.cells[coordinate]
-                
-                cell.insertContent(content)
-                self.cells[coordinate] = cell
-        except Exception as e:
-            print(f"Ocurrió una excepción: {e}")    
-        #self.cells[coordinate] = Cell(col, row, content, self.cells)    
-        #ERROR AQUI - funcion de python?
-        #self.cells[coordinate].setContent(content) hay que usar una funcion en cell para gestionar funciones
+        if coordinate not in self.cells:
+            match = re.match(r"([A-Z]+)(\d+$)", coordinate)
+            if not match:
+                raise ValueError(f"Invalid coordinate format: {coordinate}")
+            col, row = match.groups()
+            self.cells[coordinate] = Cell(col, row, content)
+        else:
+            self.cells[coordinate].set_content(content)
 
-    #def _split_coordinate(self, coordinate):
-    #    import re
-    #    match = re.match(r"^([A-Z]+)(\d+)$", coordinate)
-    #    if not match:
-    #        raise ValueError(f"Invalid coordinate format: {coordinate}")
-    #    col, row = match.groups()
-    #    return col, int(row)
-
-    def get_cell_content(self, coordinate):
+    def get_cell_content(self, coordinate) -> Content:
         if coordinate in self.cells:
-            return self.cells[coordinate].getContent()
+            return self.cells[coordinate].get_content()
         else:
             return None
         #ValueError(f"Cell at {coordinate} does not exist.") we need this?
@@ -77,23 +49,6 @@ class Spreadsheet:
     def _validate_content(self, content):
         # Validate content type
         return isinstance(content, (str, int, float))
-
-    def display_spreadsheet(self):
-        # A simple way to display the spreadsheet
-        rows = {}
-        for coord, cell in self.cells.items():
-            row, col = self._split_coordinate(coord)
-            if row not in rows:
-                rows[row] = {}
-            rows[row][col] = cell.get_value() if cell.get_value() else ""
-        
-        # Print the table-like structure
-        #all_rows = sorted(rows.keys(), key=lambda x: int(x))
-        all_cols = sorted({col for row in rows.values() for col in row.keys()})
-        print("\t" + "\t".join(all_cols))
-        for row in sorted(rows.keys()):
-        #for row in all_rows:
-            print(row + "\t" + "\t".join(rows[row].get(col, "") for col in all_cols))
 
     def _split_coordinate(self, coordinate):
         # Split coordinates into row and column (e.g., "A1" -> "A", "1")

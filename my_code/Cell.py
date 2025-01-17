@@ -1,42 +1,34 @@
 from contentHandler.models.NumericalContent import NumericalContent
 from contentHandler.models.FormulaContent import FormulaContent
 from contentHandler.models.TextualContent import TextualContent
+from contentHandler.models.TextualContent import Content
 
 class Cell:
     """
     Represents a single cell within a spreadsheet.
     """
 
-    def __init__(self, row: int, col: str, content, spreadsheet) -> None: #test
+    def __init__(self, row: int, col: str, content=None):
         """
         Initializes a cell with its coordinates and optional content.
         """
-        #Content no es redundante? tenemos content como argumento y luego set content
         self.row = row
         self.col = col
-        self.content = content  # Raw content of the cell (e.g., number, text, formula)
-        self.value = None  # Evaluated value of the cell (e.g., formula result)
-        #print(f"Spreadsheet asociado: {spreadsheet}")
-        self.spreadsheet = spreadsheet #test
-
+        self.content = self._identify_content(content)  # Raw content of the cell (e.g., number, text, formula)
+        self.value = self.content.getNumericalValue()  # Evaluated value of the cell (e.g., formula result)
 
     def _identify_content(self, content):
-        try:
-            """
-            Identifies the type of content and returns the appropriate content object.
-            """
-            if content is None:
-                return None
-            if isinstance(content, (int, float)):
-                return NumericalContent(content)
-            elif isinstance(content, str) and content.startswith("="):
-                print(f"Spreadsheet asociado en FormulaContent: {self.spreadsheet}")
-                return FormulaContent(content[1:], self.spreadsheet) #test
-            else:
-                return TextualContent(content)
-        except Exception as e:
-            print(f"Error en la inicializaciÃ³n de Cell: {e}")
-            raise
+        """
+        Identifies the type of content and returns the appropriate content object.
+        """
+        if content is None:
+            return None
+        if isinstance(content, (int, float)):
+            return NumericalContent(content)
+        elif isinstance(content, str) and content.startswith("="):
+            return FormulaContent(content[1:], None)
+        else:
+            return TextualContent(content)
 
     def getCoordinate(self):
         """
@@ -57,17 +49,18 @@ class Cell:
         self.row = row
         self.col = col
 
-    def getContent(self):
+    def get_content(self) -> Content:
         """
         Gets the raw content of the cell.
         """
         return self.content
 
-    def setContent(self, content):
+    def set_content(self, content):
         """
         Sets the raw content of the cell.
         """
         self.content = self._identify_content(content)
+        self.value = self.content.getNumericalValue()
 
     def getValue(self):
         """
@@ -95,13 +88,13 @@ class Cell:
 
         # Determina el tipo de contenido
         if content_string.startswith("="):
-            # Es contenido de tipo fÃ³rmula
+            # Es contenido de tipo fórmula
             formula_content = FormulaContent(content_string, self.spreadsheet)
 
             # Verifica dependencias circulares
             #self.checkCircularDependency(content_string) #test
 
-            # Calcula la fÃ³rmula y actualiza dependencias
+            # Calcula la fórmula y actualiza dependencias
             formula_content.calculateFormula()
             #new_dependencies = formula_content.getCircularDependences() #test
 
@@ -113,7 +106,7 @@ class Cell:
 
         else:
             try:
-                # Intenta convertir a nÃºmero (float)
+                # Intenta convertir a número (float)
                 numeric_value = float(content_string)
                 self.content = NumericalContent(numeric_value)
 
@@ -134,7 +127,7 @@ class Cell:
         for cell_id in old_dependencies - set(new_dependencies):
             self.spreadsheet.cells[cell_id].dependents.remove(self.cell_id)
 
-        # AÃ±adir nuevas dependencias
+        # Añadir nuevas dependencias
         for cell_id in new_dependencies:
             if self.cell_id not in self.spreadsheet.cells[cell_id].dependents:
                 self.spreadsheet.cells[cell_id].dependents.append(self.cell_id)
