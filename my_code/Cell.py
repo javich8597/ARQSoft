@@ -8,7 +8,7 @@ class Cell:
     Represents a single cell within a spreadsheet.
     """
 
-    def __init__(self, row: int, col: str, content=None):
+    def __init__(self, row: int, col: str, content, spreadsheet) -> None: #test
         """
         Initializes a cell with its coordinates and optional content.
         """
@@ -16,19 +16,25 @@ class Cell:
         self.col = col
         self.content = self._identify_content(content)  # Raw content of the cell (e.g., number, text, formula)
         self.value = self.content.getNumericalValue()  # Evaluated value of the cell (e.g., formula result)
+        self.spreadsheet = spreadsheet #test
 
     def _identify_content(self, content):
-        """
-        Identifies the type of content and returns the appropriate content object.
-        """
-        if content is None:
-            return None
-        if isinstance(content, (int, float)):
-            return NumericalContent(content)
-        elif isinstance(content, str) and content.startswith("="):
-            return FormulaContent(content[1:], None)
-        else:
-            return TextualContent(content)
+        try:
+            """
+            Identifies the type of content and returns the appropriate content object.
+            """
+            if content is None:
+                return None
+            if isinstance(content, (int, float)):
+                return NumericalContent(content)
+            elif isinstance(content, str) and content.startswith("="):
+                print(f"Spreadsheet asociado en FormulaContent: {self.spreadsheet}")
+                return FormulaContent(content[1:], self.spreadsheet) #test
+            else:
+                return TextualContent(content)
+        except Exception as e:
+            print(f"Error en la inicializacion de Cell: {e}")
+            raise
 
     def getCoordinate(self):
         """
@@ -88,13 +94,13 @@ class Cell:
 
         # Determina el tipo de contenido
         if content_string.startswith("="):
-            # Es contenido de tipo fórmula
+            # Es contenido de tipo formula
             formula_content = FormulaContent(content_string, self.spreadsheet)
 
             # Verifica dependencias circulares
             #self.checkCircularDependency(content_string) #test
 
-            # Calcula la fórmula y actualiza dependencias
+            # Calcula la formula y actualiza dependencias
             formula_content.calculateFormula()
             #new_dependencies = formula_content.getCircularDependences() #test
 
@@ -106,7 +112,7 @@ class Cell:
 
         else:
             try:
-                # Intenta convertir a número (float)
+                # Intenta convertir a numero (float)
                 numeric_value = float(content_string)
                 self.content = NumericalContent(numeric_value)
 
@@ -127,7 +133,7 @@ class Cell:
         for cell_id in old_dependencies - set(new_dependencies):
             self.spreadsheet.cells[cell_id].dependents.remove(self.cell_id)
 
-        # Añadir nuevas dependencias
+        # AÃ±adir nuevas dependencias
         for cell_id in new_dependencies:
             if self.cell_id not in self.spreadsheet.cells[cell_id].dependents:
                 self.spreadsheet.cells[cell_id].dependents.append(self.cell_id)

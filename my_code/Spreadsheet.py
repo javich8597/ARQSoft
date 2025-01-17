@@ -24,7 +24,7 @@ class Spreadsheet:
             if not match:
                 raise ValueError(f"Invalid coordinate format: {coordinate}")
             col, row = match.groups()
-            self.cells[coordinate] = Cell(col, row, content)
+            self.cells[coordinate] = Cell(col, row, content, self)
         else:
             self.cells[coordinate].set_content(content)
 
