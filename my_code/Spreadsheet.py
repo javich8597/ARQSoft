@@ -1,5 +1,6 @@
 from my_code.Cell import Cell
 from my_code.DependencyManager import DependencyManager
+from contentHandler.models.FormulaContent import FormulaContent
 import re
 
 class Spreadsheet:
@@ -48,7 +49,7 @@ class Spreadsheet:
         cell.insertContent(content)
         self.cells[coordinate] = cell
         # Si el contenido es una formula, actualizamos dependencias en el DependencyManager
-        if '=' in content:
+        if isinstance(cell.content, FormulaContent): #if '=' in content: Era un error
             referenced_cells = getReferencedCells(content)
 
             # Eliminar dependencias antiguas y registrar nuevas
@@ -60,7 +61,7 @@ class Spreadsheet:
         for dependent in dependents:
             self.cells[dependent].insertContent(self.cells[dependent].content.formula)
 
-    def get_cell_content(self, coordinate) -> Content:
+    def get_cell_content(self, coordinate) -> None: #-> Content
         if coordinate in self.cells:
             return self.cells[coordinate].get_content()
         else:

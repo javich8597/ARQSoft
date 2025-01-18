@@ -85,14 +85,14 @@ class PostfixGenerator:
     """
     Converts tokens into postfix notation.
     """
-
+    """ #error con los parentesis
     def convertToOperandsAndOperators(self, tokens):
-        """
+        
         Converts string tokens into categorized operands or operators.
 
         :param tokens: A list of tokens to categorize.
         :return: A list of categorized tokens.
-        """
+        
         categorized = []
         for token in tokens:
             if token.isdigit() or re.match(r"\d+\.\d+", token):
@@ -104,14 +104,37 @@ class PostfixGenerator:
             else:
                 categorized.append({"type": "variable", "value": token})
         return categorized
-
-    def reorderTokens(self, tokens):
+    """ #error
+    def convertToOperandsAndOperators(self, tokens):
         """
+        Converts string tokens into categorized operands or operators.
+
+        :param tokens: A list of tokens to categorize.
+        :return: A list of categorized tokens.
+        """
+        categorized = []
+        for token in tokens:
+            if token.isdigit() or re.match(r"\d+\.\d+", token):
+                categorized.append({"type": "operand", "value": float(token)})
+            elif token in "+-*/":
+                categorized.append({"type": "operator", "value": token})
+            elif token == "(" or token == ")":
+                # Clasificar los paréntesis como un tipo especial
+                categorized.append({"type": "parenthesis", "value": token})
+            elif token in ["SUMA", "PROMEDIO", "MIN", "MAX"]:
+                categorized.append({"type": "function", "value": token})
+            else:
+                categorized.append({"type": "variable", "value": token})
+        return categorized
+
+    """ #error
+    def reorderTokens(self, tokens):
+        
         Reorders tokens in infix notation to postfix notation using the Shunting Yard algorithm.
 
         :param tokens: A list of tokens in infix notation.
         :return: A list of tokens in postfix notation.
-        """
+        
         output = []
         stack = []
         precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '(': 0}
@@ -136,6 +159,54 @@ class PostfixGenerator:
             output.append(stack.pop())
 
         return output
+    """
+    def reorderTokens(self, tokens):
+        """
+        Reorders tokens in infix notation to postfix notation using the Shunting Yard algorithm.
+        :param tokens: A list of tokens in infix notation.
+        :return: A list of tokens in postfix notation.
+        """
+        output = []
+        stack = []
+        precedence = {'+': 1, '-': 1, '*': 2, '/': 2}
+
+        for token in tokens:
+            if token["type"] in ["operand", "variable"]:
+                # Operandos y variables van directamente a la salida
+                output.append(token)
+            elif token["type"] == "operator":
+                # Procesar operadores según precedencia
+                while stack and stack[-1]["type"] == "operator" and precedence.get(stack[-1]["value"], 0) >= precedence.get(token["value"], 0):
+                    output.append(stack.pop())
+                stack.append(token)
+            elif token["value"] == '(':
+                # Paréntesis de apertura siempre se añaden a la pila
+                stack.append(token)
+            elif token["value"] == ')':
+                # Procesar hasta encontrar un paréntesis de apertura
+                while stack and stack[-1]["value"] != '(':
+                    output.append(stack.pop())
+                if not stack:
+                    raise InvalidFormulaSintaxException("Mismatched parentheses: no opening parenthesis.")
+                stack.pop()  # Quitar el '(' de la pila
+
+        # Vaciar la pila al final
+        while stack:
+            if stack[-1]["value"] == '(':
+                raise InvalidFormulaSintaxException("Mismatched parentheses: no closing parenthesis.")
+            output.append(stack.pop())
+
+        # Eliminar paréntesis de la salida (si los hubo)
+        output = [token for token in output if token["value"] not in ['(', ')']]
+
+        return output
+
+
+
+
+
+
+
 
 
 
@@ -252,7 +323,7 @@ def computeFormula(formula: str, cellValues: dict):
         # Step 3: Convert tokens to postfix notation
         categorized_tokens = postfix_generator.convertToOperandsAndOperators(tokens)
         postfix_tokens = postfix_generator.reorderTokens(categorized_tokens)
-
+        print(f"Postfix tokens: {postfix_tokens}")
         # Step 4: Evaluate the postfix expression
         result = evaluator.evaluatePostfix(postfix_tokens, cellValues)
         return result

@@ -9,7 +9,6 @@ class Cell:
     """
 
     def __init__(self, row: int, col: str, content, spreadsheet) -> None: #test
-    def __init__(self, row: int, col: str, content, spreadsheet) -> None: #test
         """
         Initializes a cell with its coordinates and optional content.
         """
@@ -17,10 +16,8 @@ class Cell:
         self.row = row
         self.col = col
         self.content = content  # Raw content of the cell (e.g., number, text, formula)
-        self.value = self.content.getNumericalValue()  # Evaluated value of the cell (e.g., formula result)
+        self.value = None  # Evaluated value of the cell (e.g., formula result) #error self.content.getNumericalValue()
         #print(f"Spreadsheet asociado: {spreadsheet}")
-        self.spreadsheet = spreadsheet #test
-
         self.spreadsheet = spreadsheet #test
 
     def _identify_content(self, content):
@@ -95,7 +92,7 @@ class Cell:
             - A textual value (default).
         """
         # Elimina espacios en blanco al inicio y final
-        content_string = content_string.strip()
+        content_string = str(content_string).strip() #ERROR
 
         # Determina el tipo de contenido
         if content_string.startswith("="):

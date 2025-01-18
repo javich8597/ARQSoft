@@ -3,7 +3,7 @@ import sys
 import os
 from usecasesmarker.spreadsheet_controller_for_checker import ISpreadsheetControllerForChecker
 sys.path.append(os.path.join("../../",os.getcwd()))
-print(sys.path)
+print(f'path: {sys.path}')
 from controllers.SpreadsheetController import SpreadsheetController
 
 
