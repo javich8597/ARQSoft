@@ -1,5 +1,5 @@
 import re
-from contentHandler.models.NumericalContent import NumericalContent
+
 class Tokenizer:
     """
     Tokenizes formulas into a sequence of tokens.
@@ -127,39 +127,7 @@ class PostfixGenerator:
                 categorized.append({"type": "variable", "value": token})
         return categorized
 
-    """ #error
-    def reorderTokens(self, tokens):
-        
-        Reorders tokens in infix notation to postfix notation using the Shunting Yard algorithm.
-
-        :param tokens: A list of tokens in infix notation.
-        :return: A list of tokens in postfix notation.
-        
-        output = []
-        stack = []
-        precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '(': 0}
-
-        for token in tokens:
-            if token["type"] in ["operand", "variable"]:
-                output.append(token)
-            elif token["type"] == "operator" and token["value"] != '=':  # Ignorar el '='
-                while stack and stack[-1]["type"] == "operator" and precedence.get(stack[-1]["value"], 0) >= precedence.get(token["value"], 0):
-                    output.append(stack.pop())
-                stack.append(token)
-            elif token["type"] == "function":
-                stack.append(token)
-            elif token["value"] == '(':
-                stack.append(token)
-            elif token["value"] == ')':
-                while stack and stack[-1]["value"] != '(':
-                    output.append(stack.pop())
-                stack.pop()
-
-        while stack:
-            output.append(stack.pop())
-
-        return output
-    """
+     #ERROR AÑADIR SUMA y funciones
     def reorderTokens(self, tokens):
         """
         Reorders tokens in infix notation to postfix notation using the Shunting Yard algorithm.
@@ -200,6 +168,8 @@ class PostfixGenerator:
         output = [token for token in output if token["value"] not in ['(', ')']]
 
         return output
+    
+
 
 
 
@@ -214,7 +184,7 @@ class PostfixEvaluator:
     """
     Evaluates expressions in postfix notation.
     """
-
+    #ERROR AÑADIR FUNCIONES
     def evaluatePostfix(self, postfixExpression, cellValues):
         """
         Evaluates the postfix expression and returns the result.
@@ -265,7 +235,7 @@ class PostfixEvaluator:
             return stack.pop()
         except Exception as e:
             raise EvaluationException(f"Error during evaluation: {str(e)}")
-
+    
 
 
 class EvaluationException(Exception):
@@ -284,8 +254,9 @@ def computeFormula(formula: str, cellValues: dict):
     :param cellValues: A dictionary containing cell values for variables.
     :return: The computed result.
     """
+    """ MOVIDO A FORMULACONTENT
     try:
-        #test4
+        
         # Reemplaza las referencias de celdas con sus valores
         pattern = r"\b[A-Z]+[0-9]+\b"  # Coincide con referencias exactas de celdas
         
@@ -307,7 +278,7 @@ def computeFormula(formula: str, cellValues: dict):
     except Exception as e:
         print(f"Error: {e}")
         return None
-        
+        """
     try:
         tokenizer = Tokenizer()
         parser = Parser()
