@@ -95,13 +95,13 @@ class Cell:
 
         # Determina el tipo de contenido
         if content_string.startswith("="):
-            # Es contenido de tipo fórmula
+            # Es contenido de tipo formula
             formula_content = FormulaContent(content_string, self.spreadsheet)
 
             # Verifica dependencias circulares
             #self.checkCircularDependency(content_string) #test
 
-            # Calcula la fórmula y actualiza dependencias
+            # Calcula la formula y actualiza dependencias
             formula_content.calculateFormula()
             #new_dependencies = formula_content.getCircularDependences() #test
 
@@ -113,7 +113,7 @@ class Cell:
 
         else:
             try:
-                # Intenta convertir a número (float)
+                # Intenta convertir a numero (float)
                 numeric_value = float(content_string)
                 self.content = NumericalContent(numeric_value)
 

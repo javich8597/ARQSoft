@@ -1,72 +1,66 @@
-from my_code.Spreadsheet import Spreadsheet
 
 class DependencyManager:
     """
-    Manages cell dependencies and ensures no circular references exist.
+    Manages dependencies between cells in a spreadsheet.
     """
-
     def __init__(self):
+        # Diccionario que mapea cada celda a sus dependencias
+        self.dependencies = {}
+
+    def addDependencies(self, cell_id, dependent_ids):
         """
-        Initializes the dependency manager with an empty dependency graph.
+        Adds dependencies for a given cell.
+
+        :param cell_id: The cell that has dependencies.
+        :param dependent_ids: A list of cells that the cell depends on.
         """
-        self.dependency_graph = {}
-        self.Spreadsheet = Spreadsheet()
+        if cell_id not in self.dependencies:
+            self.dependencies[cell_id] = set()
 
+        for dep_id in dependent_ids:
+            self.checkCircularDependency(cell_id, dep_id)
+            self.dependencies[cell_id].add(dep_id)
 
-    def addDependency(self, cell: str, dependencies: list):
+    def removeDependencies(self, cell_id):
         """
-        Adds a dependency for a specific cell.
+        Removes all dependencies for a given cell.
 
-        :param cell: The cell to add dependencies for.
-        :param dependencies: A list of cells that the specified cell depends on.
+        :param cell_id: The cell whose dependencies should be removed.
         """
-        if cell not in self.dependency_graph:
-            self.dependency_graph[cell] = set()
-        self.dependency_graph[cell].update(dependencies)
+        if cell_id in self.dependencies:
+            del self.dependencies[cell_id]
 
-    def removeDependency(self, cell: str):
+    def getDependents(self, cell_id):
         """
-        Removes a cell and its dependencies from the graph.
+        Returns a list of cells that depend on the given cell.
 
-        :param cell: The cell to remove from the dependency graph.
+        :param cell_id: The cell to check dependents for.
+        :return: A list of dependent cell IDs.
         """
-        if cell in self.dependency_graph:
-            del self.dependency_graph[cell]
-        for deps in self.dependency_graph.values():
-            deps.discard(cell)
+        dependents = []
+        for dependent, deps in self.dependencies.items():
+            if cell_id in deps:
+                dependents.append(dependent)
+        return dependents
 
-    def checkDependencies(self, cell: str) -> bool:
+    def checkCircularDependency(self, start_cell, target_cell):
         """
-        Checks for circular dependencies starting from a given cell.
+        Checks if adding a dependency creates a circular dependency.
 
-        :param cell: The starting cell to check for circular dependencies.
-        :return: True if no circular dependency exists, False otherwise.
-
-        Exceptional Situations:
-            - CircularDependencyException: Raised if a circular dependency is detected.
+        :param start_cell: The cell to check from.
+        :param target_cell: The cell to check to.
+        :raises CircularDependencyException: If a circular dependency is detected.
         """
         visited = set()
-        stack = set()
 
-        def visit(node):
-            if node in stack:
-                raise CircularDependencyException(f"Circular dependency detected involving cell {node}.")
-            if node not in visited:
-                visited.add(node)
-                stack.add(node)
-                for neighbor in self.dependency_graph.get(node, []):
-                    visit(neighbor)
-                stack.remove(node)
+        def dfs(cell_id):
+            if cell_id in visited:
+                raise CircularDependencyException(f"Circular dependency detected: {cell_id}")
+            visited.add(cell_id)
+            for dep in self.dependencies.get(cell_id, []):
+                dfs(dep)
 
-        try:
-            visit(cell)
-            return True
-        except CircularDependencyException as e:
-            print(e)
-            return False
-        
-    def getCellValues(self):
-        return self.Spreadsheet.getCellValues()
+        dfs(target_cell)
 
 class CircularDependencyException(Exception):
     """

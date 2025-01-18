@@ -1,9 +1,12 @@
 from my_code.Cell import Cell
+from my_code.DependencyManager import DependencyManager
 import re
 
 class Spreadsheet:
     def __init__(self):
         self.cells = {}
+        self.dependency_manager = DependencyManager()
+        self.processing = set() #test3
         # Javi: Rango de celdas predefinido si o no?
         #def __init__(self, rows=10, cols=10):
         #self.cells = {}
@@ -22,39 +25,40 @@ class Spreadsheet:
             #print(f"Llamando a set_cell_content desde {self.__class__.__name__}")
             self.set_cell_content(coordinate, content)
         except Exception as e:
-            print(f"Excepción al llamar a set_cell_content: {e}")
-        
+            print(f"Excepcion al llamar a set_cell_content: {e}")
+    
     def set_cell_content(self, coordinate, content):
-        #print(f"Creando celda con coordenada {coordinate} y contenido {content}")
-        #print(f"spreadsheet: {self}") 
-        try:
-            #print("Entrando a set_cell_content")  # Esto imprimirá si el método se está ejecutando
-            #print(f"type(self): {type(self)}")
-            #if coordinate not in self.cells: #test
-                match = re.match(r"([A-Z]+)(\d+$)", coordinate)
-                if not match:
-                    raise ValueError(f"Invalid coordinate format: {coordinate}")
-                col, row = match.groups()
-                if len(self.cells)==0 or not coordinate in self.cells:
-                    cell = Cell(col, row, content, self)
-                else:
-                    cell = self.cells[coordinate]
-                
-                cell.insertContent(content)
-                self.cells[coordinate] = cell
-        except Exception as e:
-            print(f"Ocurrió una excepción: {e}")    
-        #self.cells[coordinate] = Cell(col, row, content, self.cells)    
-        #ERROR AQUI - funcion de python?
-        #self.cells[coordinate].setContent(content) hay que usar una funcion en cell para gestionar funciones
+        """
+        Sets or updates the content of a cell in the spreadsheet.
 
-    #def _split_coordinate(self, coordinate):
-    #    import re
-    #    match = re.match(r"^([A-Z]+)(\d+)$", coordinate)
-    #    if not match:
-    #        raise ValueError(f"Invalid coordinate format: {coordinate}")
-    #    col, row = match.groups()
-    #    return col, int(row)
+        :param coordinate: The coordinate of the cell (e.g., 'A1').
+        :param content_string: The content string to insert into the cell.
+        """
+        match = re.match(r"([A-Z]+)(\d+$)", coordinate)
+        if not match:
+            raise ValueError(f"Invalid coordinate format: {coordinate}")
+        col, row = match.groups()
+        
+        if coordinate not in self.cells or len(self.cells)==0 :
+            cell = Cell(col, row, content, self)
+        else:
+            cell = self.cells[coordinate]
+
+        # Insertar contenido en la celda (esto tambien calcula la formula si aplica)
+        cell.insertContent(content)
+        self.cells[coordinate] = cell
+        # Si el contenido es una formula, actualizamos dependencias en el DependencyManager
+        if '=' in content:
+            referenced_cells = getReferencedCells(content)
+
+            # Eliminar dependencias antiguas y registrar nuevas
+            self.dependency_manager.removeDependencies(coordinate) #AQUI
+            self.dependency_manager.addDependencies(coordinate, referenced_cells)
+
+        # Notificar a las celdas dependientes
+        dependents = self.dependency_manager.getDependents(coordinate)
+        for dependent in dependents:
+            self.cells[dependent].insertContent(self.cells[dependent].content.formula)
 
     def get_cell_content(self, coordinate):
         if coordinate in self.cells:
@@ -135,8 +139,22 @@ class Spreadsheet:
 
         return min(rows), max(rows), min(cols), max(cols)
 
-    def getCells(self): #test
-        # Si necesitas devolver celdas con valores, puedes llenar self.cells_data aquí
-        # Por ejemplo:
-        self.cells_data = self.cells # O cualquier otra lógica que necesites
-        return self.cells_data  # Devuelves el diccionario de celdas
+    def getCells(self): #test2
+        """
+        Devuelve un diccionario con referencias de celdas como claves y sus contenidos como valores.
+        """
+        cells_data = {}
+        for coordinate, cell in self.cells.items():
+            if cell.content:
+                # Devuelve el contenido de la celda directamente
+                cells_data[coordinate] = cell.content
+            else:
+                cells_data[coordinate] = None
+        return cells_data
+
+def getReferencedCells(content): #test2
+        """
+        Extracts cell references (e.g., 'A2', 'A3') from the formula.
+        """
+        pattern = r"[A-Z]+[0-9]+"
+        return re.findall(pattern, content)

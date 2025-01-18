@@ -1,4 +1,5 @@
 import re
+from contentHandler.models.NumericalContent import NumericalContent
 class Tokenizer:
     """
     Tokenizes formulas into a sequence of tokens.
@@ -212,6 +213,30 @@ def computeFormula(formula: str, cellValues: dict):
     :param cellValues: A dictionary containing cell values for variables.
     :return: The computed result.
     """
+    try:
+        #test4
+        # Reemplaza las referencias de celdas con sus valores
+        pattern = r"\b[A-Z]+[0-9]+\b"  # Coincide con referencias exactas de celdas
+        
+        def replace_reference(match):
+            ref = match.group(0)
+            if ref in cellValues:
+                # Obtener el objeto y su valor numerico
+                cell_obj = cellValues[ref]
+                if isinstance(cell_obj, NumericalContent):
+                    return str(cell_obj.getNumericalValue())
+                else:
+                    raise ValueError(f"Cell {ref} is not a NumericalContent object.")
+            else:
+                raise ValueError(f"Undefined cell reference: {ref}")
+        
+        # Reemplazar referencias en la formula
+        formula = re.sub(pattern, replace_reference, formula)
+        
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+        
     try:
         tokenizer = Tokenizer()
         parser = Parser()
