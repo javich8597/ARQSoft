@@ -90,31 +90,31 @@ class Cell:
             - A textual value (default).
         """
         # Elimina espacios en blanco al inicio y final
-        content_string = content_string.strip()
 
-        # Determina el tipo de contenido
-        if content_string.startswith("="):
+
+        if isinstance(content_string, str):
+            content_string = content_string.strip()
+            if content_string.startswith("="):
             # Es contenido de tipo formula
-            formula_content = FormulaContent(content_string, self.spreadsheet)
+                formula_content = FormulaContent(content_string[1:], self.spreadsheet)
 
             # Verifica dependencias circulares
             #self.checkCircularDependency(content_string) #test
 
             # Calcula la formula y actualiza dependencias
-            formula_content.calculateFormula()
+                formula_content.calculateFormula()
             #new_dependencies = formula_content.getCircularDependences() #test
 
             # Gestiona dependencias
             #self.updateDependencies(new_dependencies) #test
 
             # Establece el contenido
-            self.content = formula_content
+                self.content = formula_content
 
         else:
             try:
                 # Intenta convertir a numero (float)
-                numeric_value = float(content_string)
-                self.content = NumericalContent(numeric_value)
+                self.content = NumericalContent(float(content_string))
 
             except ValueError:
                 # Si falla, asume que es texto

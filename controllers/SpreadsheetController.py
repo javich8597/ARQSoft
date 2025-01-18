@@ -13,7 +13,7 @@ class SpreadsheetController:
         self.newsheet: Spreadsheet = None
 
     def create_new_spreadsheet(self) -> Spreadsheet:
-        self.newsheet = Spreadsheet()
+        self.spreadsheet = Spreadsheet()
         print("Nueva hoja de cálculo creada")
 
     #def set_cell_content(self, coordinate, content):

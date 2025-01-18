@@ -1,11 +1,11 @@
-A1: 1
-A2: 2
-A3: 3
-A4: 4
-A5: 5
-A6: 6
-B2: 10
-C3: 30
-D4: 8
-E5: 20
-F6: 40
+A1: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138CE50>
+A2: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138CF10>
+A3: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138CFD0>
+A4: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138CCD0>
+A5: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138D110>
+A6: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138D250>
+B2: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138D2D0>
+C3: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138D3D0>
+D4: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138D350>
+E5: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138D4D0>
+F6: <contentHandler.models.TextualContent.TextualContent object at 0x00000200E138D710>

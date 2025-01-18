@@ -19,14 +19,28 @@ class Spreadsheet:
             print(f"Excepción al llamar a set_cell_content: {e}")
         
     def set_cell_content(self, coordinate, content):
-        if coordinate not in self.cells:
-            match = re.match(r"([A-Z]+)(\d+$)", coordinate)
-            if not match:
-                raise ValueError(f"Invalid coordinate format: {coordinate}")
-            col, row = match.groups()
-            self.cells[coordinate] = Cell(col, row, content, self)
-        else:
-            self.cells[coordinate].set_content(content)
+        #print(f"Creando celda con coordenada {coordinate} y contenido {content}")
+        #print(f"spreadsheet: {self}") 
+        try:
+            #print("Entrando a set_cell_content")  # Esto imprimirá si el método se está ejecutando
+            #print(f"type(self): {type(self)}")
+            #if coordinate not in self.cells: #test
+                match = re.match(r"([A-Z]+)(\d+$)", coordinate)
+                if not match:
+                    raise ValueError(f"Invalid coordinate format: {coordinate}")
+                col, row = match.groups()
+                if len(self.cells)==0 or not coordinate in self.cells:
+                    cell = Cell(row, col, content, self)
+                else:
+                    cell = self.cells[coordinate]
+                
+                cell.insertContent(content)
+                self.cells[coordinate] = cell
+        except Exception as e:
+            print(f"Ocurrió una excepción: {e}")    
+        #self.cells[coordinate] = Cell(col, row, content, self.cells)    
+        #ERROR AQUI - funcion de python?
+        #self.cells[coordinate].setContent(content) hay que usar una funcion en cell para gestionar funciones
 
     def get_cell_content(self, coordinate) -> Content:
         if coordinate in self.cells:
