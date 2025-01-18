@@ -3,6 +3,9 @@ from my_code.FormulaManager.FormulaProcessing import computeFormula
 
 class FormulaContent(Content):
     def __init__(self, formula: str, spreadsheet) -> None:
+        if not spreadsheet:
+            raise ValueError("JAVI: A valid spreadsheet reference is required.")
+    def __init__(self, formula: str, spreadsheet) -> None:
         super().__init__('formula', formula)
         self.formula = formula
         self.spreadsheet = spreadsheet

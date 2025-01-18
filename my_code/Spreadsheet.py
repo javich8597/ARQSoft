@@ -60,9 +60,9 @@ class Spreadsheet:
         for dependent in dependents:
             self.cells[dependent].insertContent(self.cells[dependent].content.formula)
 
-    def get_cell_content(self, coordinate):
+    def get_cell_content(self, coordinate) -> Content:
         if coordinate in self.cells:
-            return self.cells[coordinate].getContent()
+            return self.cells[coordinate].get_content()
         else:
             return None
         #ValueError(f"Cell at {coordinate} does not exist.") we need this?
@@ -81,23 +81,6 @@ class Spreadsheet:
     def _validate_content(self, content):
         # Validate content type
         return isinstance(content, (str, int, float))
-
-    def display_spreadsheet(self):
-        # A simple way to display the spreadsheet
-        rows = {}
-        for coord, cell in self.cells.items():
-            row, col = self._split_coordinate(coord)
-            if row not in rows:
-                rows[row] = {}
-            rows[row][col] = cell.get_value() if cell.get_value() else ""
-        
-        # Print the table-like structure
-        #all_rows = sorted(rows.keys(), key=lambda x: int(x))
-        all_cols = sorted({col for row in rows.values() for col in row.keys()})
-        print("\t" + "\t".join(all_cols))
-        for row in sorted(rows.keys()):
-        #for row in all_rows:
-            print(row + "\t" + "\t".join(rows[row].get(col, "") for col in all_cols))
 
     def _split_coordinate(self, coordinate):
         # Split coordinates into row and column (e.g., "A1" -> "A", "1")

@@ -1,12 +1,14 @@
 from contentHandler.models.NumericalContent import NumericalContent
 from contentHandler.models.FormulaContent import FormulaContent
 from contentHandler.models.TextualContent import TextualContent
+from contentHandler.models.TextualContent import Content
 
 class Cell:
     """
     Represents a single cell within a spreadsheet.
     """
 
+    def __init__(self, row: int, col: str, content, spreadsheet) -> None: #test
     def __init__(self, row: int, col: str, content, spreadsheet) -> None: #test
         """
         Initializes a cell with its coordinates and optional content.
@@ -15,10 +17,11 @@ class Cell:
         self.row = row
         self.col = col
         self.content = content  # Raw content of the cell (e.g., number, text, formula)
-        self.value = None  # Evaluated value of the cell (e.g., formula result)
+        self.value = self.content.getNumericalValue()  # Evaluated value of the cell (e.g., formula result)
         #print(f"Spreadsheet asociado: {spreadsheet}")
         self.spreadsheet = spreadsheet #test
 
+        self.spreadsheet = spreadsheet #test
 
     def _identify_content(self, content):
         try:
@@ -57,17 +60,18 @@ class Cell:
         self.row = row
         self.col = col
 
-    def getContent(self):
+    def get_content(self) -> Content:
         """
         Gets the raw content of the cell.
         """
         return self.content
 
-    def setContent(self, content):
+    def set_content(self, content):
         """
         Sets the raw content of the cell.
         """
         self.content = self._identify_content(content)
+        self.value = self.content.getNumericalValue()
 
     def getValue(self):
         """
