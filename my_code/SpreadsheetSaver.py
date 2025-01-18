@@ -10,7 +10,7 @@ class SpreadsheetSaver:
             cells = spreadsheet.cells
             data_dict = {
                 coord: SpreadsheetSaver._convert_value(cell.get_content())  # Llamar a la función de conversión
-                for coord, cell in cells.items() if cell and cell.get_content()
+                for coord, cell in cells.items() if cell and cell.get_content() is not None
             }
 
             # Determinar dimensiones de la hoja
@@ -46,7 +46,7 @@ class SpreadsheetSaver:
             if float_value.is_integer():
                 return int(float_value)
             return float_value  # Si no es un número entero, devolvemos como float
-        except ValueError:
+        except (ValueError, TypeError):
             # Si no podemos convertir a float, devolvemos el valor tal cual (puede ser string o cualquier otro tipo)
             return value
 
