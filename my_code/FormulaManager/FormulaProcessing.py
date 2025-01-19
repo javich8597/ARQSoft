@@ -148,20 +148,10 @@ class PostfixGenerator:
     
 
 
-
-
-
-
-
-
-
-
-
 class PostfixEvaluator:
     """
     Evaluates expressions in postfix notation.
     """
-    #ERROR AÑADIR FUNCIONES
     def evaluatePostfix(self, postfixExpression, cellValues):
         """
         Evaluates the postfix expression and returns the result.
@@ -231,31 +221,6 @@ def computeFormula(formula: str, cellValues: dict):
     :param cellValues: A dictionary containing cell values for variables.
     :return: The computed result.
     """
-    """ MOVIDO A FORMULACONTENT
-    try:
-        
-        # Reemplaza las referencias de celdas con sus valores
-        pattern = r"\b[A-Z]+[0-9]+\b"  # Coincide con referencias exactas de celdas
-        
-        def replace_reference(match):
-            ref = match.group(0)
-            if ref in cellValues:
-                # Obtener el objeto y su valor numerico
-                cell_obj = cellValues[ref]
-                if isinstance(cell_obj, NumericalContent):
-                    return str(cell_obj.get_number_value())
-                else:
-                    raise ValueError(f"Cell {ref} is not a NumericalContent object.")
-            else:
-                raise ValueError(f"Undefined cell reference: {ref}")
-        
-        # Reemplazar referencias en la formula
-        formula = re.sub(pattern, replace_reference, formula)
-        
-    except Exception as e:
-        print(f"Error: {e}")
-        return None
-        """
     try:
         tokenizer = Tokenizer()
         parser = Parser()
