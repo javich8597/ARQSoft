@@ -61,7 +61,7 @@ class Spreadsheet:
         for dependent in dependents:
             self.cells[dependent].insertContent(self.cells[dependent].content.formula)
 
-    def get_cell_content(self, coordinate) -> None: #-> Content
+    def get_cell_content(self, coordinate):
         if coordinate in self.cells:
             return self.cells[coordinate].get_content()
         else:
