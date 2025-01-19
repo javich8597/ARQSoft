@@ -44,13 +44,6 @@ class Cell:
         """
         return self.content
 
-    def set_content(self, content):
-        """
-        Sets the raw content of the cell.
-        """
-        self.content = self._identify_content(content)
-        self.value = self.content.get_number_value()
-
     def get_value(self):
         """
         Returns the evaluated value of the cell.

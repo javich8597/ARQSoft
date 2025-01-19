@@ -10,7 +10,7 @@ class SpreadsheetController:
 
     def create_new_spreadsheet(self) -> Spreadsheet:
         self.spreadsheet = Spreadsheet()
-        print("Nueva hoja de cálculo creada")
+        print("Created new spreadsheet.")
 
     def get_cell_content(self, coordinate):
         try:
@@ -22,8 +22,8 @@ class SpreadsheetController:
             return None
         
     def show_menu(self):
-        self.userInterface.displayMenu()
-        command = self.userInterface.getUserChoice()
+        self.userInterface.display_menu()
+        command = self.userInterface.get_user_choice()
         self.processCommand(command)
 
     def process_command(self, command: str):

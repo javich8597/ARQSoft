@@ -17,7 +17,7 @@ class UserInterface:
             "S": "Save the spreadsheet to a file",
         }
 
-    def displayMenu(self):
+    def display_menu(self):
         """
         Prints the main menu options for the user.
         """
@@ -25,7 +25,7 @@ class UserInterface:
         for key, description in self.options.items():
             print(f"{key}. {description}")
 
-    def getUserChoice(self):
+    def get_user_choice(self):
         """
         Gets the user choice from the menu.
         """
