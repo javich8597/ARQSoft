@@ -9,4 +9,4 @@ class TextualContent(Content):
         return 0
 
     def get_content(self):
-        return f"Texto: {self.textualvalue}"
+        return f"Text: {self.textualvalue}"

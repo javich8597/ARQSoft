@@ -15,7 +15,7 @@ class Cell:
         """
         self.row = row
         self.col = col
-        self.content = content  # Raw content of the cell (e.g., number, text, formula)
+        self.content = content  # Content object of the cell (e.g., number, text, formula)
         self.value = None  # Evaluated value of the cell (e.g., formula result) 
         self.spreadsheet = spreadsheet 
 

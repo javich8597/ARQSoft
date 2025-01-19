@@ -9,4 +9,4 @@ class NumericalContent(Content):
         return self.number
     
     def get_content(self):
-        return f"Número: {self.textualvalue}"
+        return f"Number: {self.textualvalue}"

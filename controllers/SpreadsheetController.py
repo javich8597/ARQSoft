@@ -15,10 +15,9 @@ class SpreadsheetController:
     def get_cell_content(self, coordinate):
         try:
             content = self.spreadsheet.get_cell_content(coordinate)
-            print(f"Contenido de la celda {coordinate}: {content}")
             return content
         except Exception as e:
-            print(f"Error al obtener el contenido de la celda: {e}")
+            print(f"Error in get_cell_content: {e}")
             return None
         
     def show_menu(self):
@@ -60,9 +59,8 @@ class SpreadsheetController:
             else:
                 print(f"Error: Unknown command {cmd}.")
         except Exception as e:
-            print(f"Error al procesar el comando {cmd}: {e}")
-            import traceback
-            traceback.print_exc()
+            print(f"Error processing command {cmd}: {e}")
+
 
     def set_cell_content(self, coord, str_content):
         try:
@@ -91,7 +89,6 @@ class SpreadsheetController:
         try:
             formula = self.spreadsheet.get_cell_content(coord)
             return formula.formula
-            #return formula.replace("=", "") if formula else ""
         except Exception as e:
             print(f"Error getting cell formula expression: {e}")
             raise
@@ -124,32 +121,32 @@ class SpreadsheetController:
         except FileNotFoundError:
             print(f"Error: File not found at {file_path}.")
 
-    #Print por la terminal toda la informacion de la celda
+    #Show in console the spreadsheet
     def print_spreadsheet(self):
         """
         Prints the spreadsheet in a format similar to an Excel sheet.
         """
-        # Obtener los límites
+        # Obtain the boundaries of the spreadsheet
         min_row, max_row, min_col, max_col = self.spreadsheet.get_boundaries()
 
-        # Generar los encabezados de columnas (sin conversiones)
+        # Generate column headers
         col_headers = []
         current_col = min_col
         while current_col <= max_col:
             col_headers.append(current_col)
             current_col = chr(ord(current_col) + 1)
 
-        # Imprimir encabezado de columnas
-        print("    ", end="")  # Espacio inicial para el encabezado de filas
+        # Print the column headers
+        print("    ", end="")  # Space for row numbers
         for header in col_headers:
-            print(f"{header:^10}", end="")  # Encabezados centrados
+            print(f"{header:^10}", end="")  # Column header centered
         print()
 
-        # Imprimir las filas y contenido
+        # Print the content of each cell
         for row in range(min_row, max_row + 1):
-            print(f"{row:<4}", end="")  # Número de fila alineado a la izquierda
+            print(f"{row:<4}", end="")  # Number of the row
             for col in col_headers:
                 cell_content = self.spreadsheet.get_cell_content(f"{col}{row}")
                 cell_value = cell_content.get_value() if cell_content else ""
-                print(f"{cell_value:^10}", end="")  # Contenido de la celda centrado
-            print()  # Nueva línea al final de cada fila
+                print(f"{cell_value:^10}", end="")  
+            print()  # New line after each row

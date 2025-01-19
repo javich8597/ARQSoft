@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 class Content(ABC):
-    """Clase base para diferentes tipos de contenido en una celda."""
+    """Abstract Class representing the content of a cell in a spreadsheet."""
     
     def __init__(self, type: str, stringvalue: str) -> None:
         self.type = type

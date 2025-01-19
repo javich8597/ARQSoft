@@ -1,13 +1,10 @@
 from my_code.Cell import Cell
-from my_code.DependencyManager import DependencyManager
 from contentHandler.models.FormulaContent import FormulaContent
 import re
 
 class Spreadsheet:
     def __init__(self):
         self.cells = {}
-        self.dependency_manager = DependencyManager()
-        self.processing = set() #test3
 
     def edit_cell(self, coordinate, content):
         if not self._validate_coordinates(coordinate):
@@ -15,10 +12,11 @@ class Spreadsheet:
         if not self._validate_content(content):
            raise ValueError("Invalid content type. Supported types are: str, int, float.")
         print(f"Editing cell {coordinate} with new content: {content}")
+        
         try:
             self.set_cell_content(coordinate, content)
         except Exception as e:
-            print(f"Excepcion al llamar a set_cell_content: {e}")
+            print(f"Exception in set_cell_content: {e}")
     
     def set_cell_content(self, coordinate, content):
         """
@@ -40,18 +38,7 @@ class Spreadsheet:
         # Insert content into the cell (this also calculates the formula if applicable)
         cell.insert_content(content)
         self.cells[coordinate] = cell
-        # If the content is a formula, update dependencies in the DependencyManager
-        if isinstance(cell.content, FormulaContent): #if '=' in content: Era un error
-            referenced_cells = FormulaContent.get_referenced_cells(content)
 
-            # Remove old dependencies and register new ones
-            self.dependency_manager.removeDependencies(coordinate)
-            self.dependency_manager.addDependencies(coordinate, referenced_cells)
-
-        # Notify dependent cells
-        dependents = self.dependency_manager.getDependents(coordinate)
-        for dependent in dependents:
-            self.cells[dependent].insert_content(self.cells[dependent].content.formula)
 
     def get_cell_content(self, coordinate):
         if coordinate in self.cells:
@@ -90,9 +77,9 @@ class Spreadsheet:
 
         return min(rows), max(rows), min(cols), max(cols)
 
-    def get_cells(self): #test2
+    def get_cells(self): 
         """
-        Devuelve un diccionario con referencias de celdas como claves y sus contenidos como valores.
+        Returns a dictionary with the content of all cells in the spreadsheet
         """
         cells_data = {}
         for coordinate, cell in self.cells.items():

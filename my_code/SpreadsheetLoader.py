@@ -5,7 +5,7 @@ import sys
 class SpreadsheetLoader:
     @staticmethod
     def __resolve_file_path(file_path: str) -> Path:
-        """Resuelve la ruta del archivo de forma robusta y compatible con distintos entornos."""
+        """Solver for relative paths"""
         file_path = Path(file_path)
 
         # path absolute
