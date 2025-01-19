@@ -15,13 +15,12 @@ class Tokenizer:
         Exceptional Situations:
             - TokenizerException
         """
-        import re
         try:
             # Remove '=' at the start of the formula if it exists
             if formula.startswith("="):
                 formula = formula[1:]
 
-            pattern = r"[A-Za-z]+\d+|\d+\.\d+|\d+|[+\-*/()=]|SUMA|PROMEDIO|MIN|MAX"
+            pattern = r"[A-Za-z]+\d+|\d+\.\d+|\d+|[+\-*/()=]"
             tokens = re.findall(pattern, formula)
 
             if not tokens:
@@ -85,26 +84,7 @@ class PostfixGenerator:
     """
     Converts tokens into postfix notation.
     """
-    """ #error con los parentesis
-    def convertToOperandsAndOperators(self, tokens):
-        
-        Converts string tokens into categorized operands or operators.
 
-        :param tokens: A list of tokens to categorize.
-        :return: A list of categorized tokens.
-        
-        categorized = []
-        for token in tokens:
-            if token.isdigit() or re.match(r"\d+\.\d+", token):
-                categorized.append({"type": "operand", "value": float(token)})
-            elif token in "+-*/()=":
-                categorized.append({"type": "operator", "value": token})
-            elif token in ["SUMA", "PROMEDIO", "MIN", "MAX"]:
-                categorized.append({"type": "function", "value": token})
-            else:
-                categorized.append({"type": "variable", "value": token})
-        return categorized
-    """ #error
     def convertToOperandsAndOperators(self, tokens):
         """
         Converts string tokens into categorized operands or operators.
@@ -119,15 +99,12 @@ class PostfixGenerator:
             elif token in "+-*/":
                 categorized.append({"type": "operator", "value": token})
             elif token == "(" or token == ")":
-                # Clasificar los paréntesis como un tipo especial
+                # Parenthesis are categorized as special operators
                 categorized.append({"type": "parenthesis", "value": token})
-            elif token in ["SUMA", "PROMEDIO", "MIN", "MAX"]:
-                categorized.append({"type": "function", "value": token})
             else:
                 categorized.append({"type": "variable", "value": token})
         return categorized
 
-     #ERROR AÑADIR SUMA y funciones
     def reorderTokens(self, tokens):
         """
         Reorders tokens in infix notation to postfix notation using the Shunting Yard algorithm.
@@ -140,31 +117,31 @@ class PostfixGenerator:
 
         for token in tokens:
             if token["type"] in ["operand", "variable"]:
-                # Operandos y variables van directamente a la salida
+                # Operand add to output
                 output.append(token)
             elif token["type"] == "operator":
-                # Procesar operadores según precedencia
+                # Process operators
                 while stack and stack[-1]["type"] == "operator" and precedence.get(stack[-1]["value"], 0) >= precedence.get(token["value"], 0):
                     output.append(stack.pop())
                 stack.append(token)
             elif token["value"] == '(':
-                # Paréntesis de apertura siempre se añaden a la pila
+                # Parenthesis are pushed to the stack
                 stack.append(token)
             elif token["value"] == ')':
-                # Procesar hasta encontrar un paréntesis de apertura
+                # Process until '('
                 while stack and stack[-1]["value"] != '(':
                     output.append(stack.pop())
                 if not stack:
                     raise InvalidFormulaSintaxException("Mismatched parentheses: no opening parenthesis.")
-                stack.pop()  # Quitar el '(' de la pila
+                stack.pop()  
 
-        # Vaciar la pila al final
+        # Remove '(' from stack
         while stack:
             if stack[-1]["value"] == '(':
                 raise InvalidFormulaSintaxException("Mismatched parentheses: no closing parenthesis.")
             output.append(stack.pop())
 
-        # Eliminar paréntesis de la salida (si los hubo)
+        # Remove parenthesis tokens if there are any
         output = [token for token in output if token["value"] not in ['(', ')']]
 
         return output

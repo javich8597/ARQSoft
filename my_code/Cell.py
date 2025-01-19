@@ -3,6 +3,7 @@ from contentHandler.models.FormulaContent import FormulaContent
 from contentHandler.models.TextualContent import TextualContent
 from contentHandler.models.TextualContent import Content
 
+
 class Cell:
     """
     Represents a single cell within a spreadsheet.
@@ -57,92 +58,26 @@ class Cell:
             - A textual value (default).
         """
         # Deletes spaces at the beginning and end of the string
-        content_string = str(content_string).strip() #ERROR
+        content_string = str(content_string).strip() 
 
         # Determines the type of content
         if content_string.startswith("="):
-            # Formula type
+            # Set to formula content
             formula_content = FormulaContent(content_string, self.spreadsheet)
-
-            # Verifies circular dependencies (not implemented)
-            #self.checkCircularDependency(content_string) #test
 
             # Calculate formula 
             formula_content.calculate_formula()
 
-            #Find new dependencies (not implemented)
-            #new_dependencies = formula_content.getCircularDependences() #test
-
-            #Update dependencies (not implemented)
-            #self.updateDependencies(new_dependencies) #test
-
             # Sets content and value
-            self.content = formula_content #ERROR, DEBEMOS GUARDARLO EN VALUE, CONTENT TIENE QUE TENER FORMULA
+            self.content = formula_content 
+            self.value = formula_content.get_textual_value() 
 
         else:
             try:
-                # Intenta convertir a numero (float)
+                # Try to convert to number (float)
                 numeric_value = float(content_string)
                 self.content = NumericalContent(numeric_value)
 
             except ValueError:
-                # Si falla, asume que es texto
+                # If fails is text
                 self.content = TextualContent(content_string)
-
-    def updateDependencies(self, new_dependencies):
-        """
-        Updates the dependencies of the cell based on the new dependencies provided.
-
-        :param new_dependencies: A list of cell IDs that the current cell depends on.
-        """
-        old_dependencies = set(self.dependencies)
-        self.dependencies = new_dependencies
-
-        # Eliminar las dependencias que ya no existen
-        for cell_id in old_dependencies - set(new_dependencies):
-            self.spreadsheet.cells[cell_id].dependents.remove(self.cell_id)
-
-        # Añadir nuevas dependencias
-        for cell_id in new_dependencies:
-            if self.cell_id not in self.spreadsheet.cells[cell_id].dependents:
-                self.spreadsheet.cells[cell_id].dependents.append(self.cell_id)
-
-    def checkCircularDependency(self, formula):
-        """
-        Verifies that adding the dependencies from the formula does not create a circular dependency.
-
-        :param formula: The formula to analyze for dependencies.
-        :raises CircularDependencyException: If a circular dependency is detected.
-        """
-        dependencies = self.extractDependenciesFromFormula(formula)
-        visited = set()
-
-        def dfs(cell_id):
-            if cell_id in visited:
-                raise CircularDependencyException(f"Circular dependency detected at {cell_id}")
-            visited.add(cell_id)
-            for dependent_cell in self.spreadsheet.cells[cell_id].dependencies:
-                dfs(dependent_cell)
-
-        for dependency in dependencies:
-            dfs(dependency)
-
-    def extractDependenciesFromFormula(self, formula):
-        """
-        Extracts cell references from the given formula.
-
-        :param formula: The formula to parse.
-        :return: A list of cell IDs (e.g., ['A1', 'B2']).
-        """
-        import re
-        pattern = r"[A-Z]+[0-9]+"
-        return re.findall(pattern, formula)
-
-class CircularDependencyException(Exception):
-    """
-    Exception raised when a circular dependency is detected in the spreadsheet.
-    """
-    def __init__(self, message="Circular dependency detected"):
-        super().__init__(message)
-
-

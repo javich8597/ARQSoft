@@ -4,7 +4,7 @@ class DependencyManager:
     Manages dependencies between cells in a spreadsheet.
     """
     def __init__(self):
-        # Diccionario que mapea cada celda a sus dependencias
+        # Maps each cell to its dependencies
         self.dependencies = {}
 
     def addDependencies(self, cell_id, dependent_ids):
@@ -64,6 +64,7 @@ class DependencyManager:
 
 class CircularDependencyException(Exception):
     """
-    Exception raised when a circular dependency is detected.
+    Exception raised when a circular dependency is detected in the spreadsheet.
     """
-    pass
+    def __init__(self, message="Circular dependency detected"):
+        super().__init__(message)
