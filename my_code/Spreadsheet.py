@@ -8,13 +8,6 @@ class Spreadsheet:
         self.cells = {}
         self.dependency_manager = DependencyManager()
         self.processing = set() #test3
-        # Javi: Rango de celdas predefinido si o no?
-        #def __init__(self, rows=10, cols=10):
-        #self.cells = {}
-        #for row in range(1, rows + 1):
-        #    for col in range(1, cols + 1):
-        #        coordinate = f"{chr(64 + col)}{row}"
-        #        self.cells[coordinate] = Cell()
 
     def edit_cell(self, coordinate, content):
         if not self._validate_coordinates(coordinate):
@@ -23,7 +16,6 @@ class Spreadsheet:
            raise ValueError("Invalid content type. Supported types are: str, int, float.")
         print(f"Editing cell {coordinate} with new content: {content}")
         try:
-            #print(f"Llamando a set_cell_content desde {self.__class__.__name__}")
             self.set_cell_content(coordinate, content)
         except Exception as e:
             print(f"Excepcion al llamar a set_cell_content: {e}")
@@ -45,18 +37,18 @@ class Spreadsheet:
         else:
             cell = self.cells[coordinate]
 
-        # Insertar contenido en la celda (esto tambien calcula la formula si aplica)
+        # Insert content into the cell (this also calculates the formula if applicable)
         cell.insert_content(content)
         self.cells[coordinate] = cell
-        # Si el contenido es una formula, actualizamos dependencias en el DependencyManager
+        # If the content is a formula, update dependencies in the DependencyManager
         if isinstance(cell.content, FormulaContent): #if '=' in content: Era un error
             referenced_cells = FormulaContent.get_referenced_cells(content)
 
-            # Eliminar dependencias antiguas y registrar nuevas
-            self.dependency_manager.removeDependencies(coordinate) #AQUI
+            # Remove old dependencies and register new ones
+            self.dependency_manager.removeDependencies(coordinate)
             self.dependency_manager.addDependencies(coordinate, referenced_cells)
 
-        # Notificar a las celdas dependientes
+        # Notify dependent cells
         dependents = self.dependency_manager.getDependents(coordinate)
         for dependent in dependents:
             self.cells[dependent].insert_content(self.cells[dependent].content.formula)
@@ -105,7 +97,6 @@ class Spreadsheet:
         cells_data = {}
         for coordinate, cell in self.cells.items():
             if cell.content:
-                # Devuelve el contenido de la celda directamente
                 cells_data[coordinate] = cell.content
             else:
                 cells_data[coordinate] = None
