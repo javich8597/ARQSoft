@@ -23,7 +23,7 @@ class SpreadsheetController:
     def show_menu(self):
         self.userInterface.display_menu()
         command = self.userInterface.get_user_choice()
-        self.processCommand(command)
+        self.process_command(command)
 
     def process_command(self, command: str):
         """
@@ -121,10 +121,11 @@ class SpreadsheetController:
         except FileNotFoundError:
             print(f"Error: File not found at {file_path}.")
 
-    #Show in console the spreadsheet
+
     def print_spreadsheet(self):
         """
-        Prints the spreadsheet in a format similar to an Excel sheet.
+        Prints the spreadsheet in a format similar to an Excel sheet,
+        dynamically adjusting column widths based on the longest content.
         """
         # Obtain the boundaries of the spreadsheet
         min_row, max_row, min_col, max_col = self.spreadsheet.get_boundaries()
@@ -136,17 +137,50 @@ class SpreadsheetController:
             col_headers.append(current_col)
             current_col = chr(ord(current_col) + 1)
 
+        # Calculate column widths
+        column_widths = {}
+        for col in col_headers:
+            max_width = len(col)  # Start with the length of the header
+            for row in range(min_row, max_row + 1):
+                cell_address = f"{col}{row}"
+                cell_content = self.spreadsheet.get_cell_content(cell_address)
+                if cell_content:
+                    try:
+                        formula = cell_content.formula
+                        value = str(cell_content.get_value())
+                        content_length = len(f"{formula} ({value})")
+                    except AttributeError:
+                        value = str(cell_content.get_value())
+                        content_length = len(value)
+                    max_width = max(max_width, content_length)
+            column_widths[col] = max_width + 2  # Add padding for readability
+
         # Print the column headers
         print("    ", end="")  # Space for row numbers
-        for header in col_headers:
-            print(f"{header:^10}", end="")  # Column header centered
+        for col in col_headers:
+            print(f"{col:^{column_widths[col]}}", end="")
         print()
 
         # Print the content of each cell
         for row in range(min_row, max_row + 1):
             print(f"{row:<4}", end="")  # Number of the row
             for col in col_headers:
-                cell_content = self.spreadsheet.get_cell_content(f"{col}{row}")
-                cell_value = cell_content.get_value() if cell_content else ""
-                print(f"{cell_value:^10}", end="")  
+                cell_address = f"{col}{row}"
+                cell_content = self.spreadsheet.get_cell_content(cell_address)
+                if cell_content:
+                    try:
+                        # Attempt to get the formula if it exists
+                        formula = cell_content.formula
+                        value = str(cell_content.get_value())
+                        content = f"{formula} ({value})"
+                    except AttributeError:
+                        # If no formula, just print the value
+                        content = str(cell_content.get_value())
+                else:
+                    # Empty cell
+                    content = ""
+                # Print the content, centered in its column
+                print(f"{content:^{column_widths[col]}}", end="")
             print()  # New line after each row
+
+

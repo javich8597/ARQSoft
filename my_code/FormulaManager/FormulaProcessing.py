@@ -236,7 +236,7 @@ def computeFormula(formula: str, cellValues: dict):
         # Step 3: Convert tokens to postfix notation
         categorized_tokens = postfix_generator.convertToOperandsAndOperators(tokens)
         postfix_tokens = postfix_generator.reorderTokens(categorized_tokens)
-        print(f"Postfix tokens: {postfix_tokens}")
+        
         # Step 4: Evaluate the postfix expression
         result = evaluator.evaluatePostfix(postfix_tokens, cellValues)
         return result
