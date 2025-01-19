@@ -9,8 +9,8 @@ class SpreadsheetSaver:
             # Extraer celdas y crear un DataFrame directamente
             cells = spreadsheet.cells
             data_dict = {
-                coord: SpreadsheetSaver._convert_value(cell.get_content())  # Llamar a la función de conversión
-                for coord, cell in cells.items() if cell and cell.get_content() is not None
+                coord: SpreadsheetSaver._convert_value(cell)  # Llamar a la función de conversión
+                for coord, cell in cells.items() if cell
             }
 
             # Determinar dimensiones de la hoja
@@ -31,24 +31,31 @@ class SpreadsheetSaver:
             raise RuntimeError(f"An error occurred while saving the file: {e}")
 
     @staticmethod
-    def _convert_value(value):
-        """Convierte el valor de la celda a tipo adecuado (int o float)"""
-        if value is None or value == "":
+    def _convert_value(cell):
+        """Convierte el valor de la celda a tipo adecuado o mantiene fórmulas como texto"""
+        content = cell.get_content()
+        if content is None or content == "":
             return ""  # Si la celda está vacía o es None, devolvemos una cadena vacía
         try:
-            # Si el valor es un objeto NumericalContent, obtenemos su valor real
-            if hasattr(value, 'getValue'):
-                value = value.getValue()
+            # Si el contenido es un objeto con una fórmula, devolver la fórmula como texto
+            if hasattr(content, 'get_formula'):
+                return content.get_formula()
 
-            # Intentamos convertir a float primero
-            float_value = float(value)
-            # Si es un número entero (sin parte decimal), lo convertimos a entero
-            if float_value.is_integer():
-                return int(float_value)
-            return float_value  # Si no es un número entero, devolvemos como float
+            # Si el contenido es un objeto NumericalContent, obtener su valor numérico
+            if hasattr(content, 'getValue'):
+                value = content.getValue()
+
+                # Intentar convertir a float primero
+                float_value = float(value)
+                # Si es un número entero (sin parte decimal), convertir a entero
+                if float_value.is_integer():
+                    return int(float_value)
+                return float_value  # Si no es un número entero, devolver como float
+            
+            # Si no es una fórmula ni un valor numérico, devolver como texto
+            return str(content)
         except (ValueError, TypeError):
-            # Si no podemos convertir a float, devolvemos el valor tal cual (puede ser string o cualquier otro tipo)
-            return value
+            return str(content)  # Devolver como texto en caso de error
 
     @staticmethod
     def is_valid_path(filepath):

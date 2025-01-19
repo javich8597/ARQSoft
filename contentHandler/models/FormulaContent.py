@@ -68,6 +68,10 @@ class FormulaContent(Content):
 
     def get_content(self):
         return f"Formula: {self.formula}"
+    
+    def get_formula(self):
+        """Devuelve la fórmula original como texto."""
+        return self.formula
 
     def getNumericalValue(self):
         return self.calculateFormula()
