@@ -1,20 +1,6 @@
-A1: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb069636e50>
-A2: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb0696327c0>
-A3: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb0696326d0>
-A4: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb069632670>
-A5: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb069632610>
-A6: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb069632490>
-B1: <contentHandler.models.FormulaContent.FormulaContent object at 0x7fb069632430>
-B2: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb0696322e0>
-C1: <contentHandler.models.FormulaContent.FormulaContent object at 0x7fb069632280>
-C3: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb069632160>
-D1: <contentHandler.models.FormulaContent.FormulaContent object at 0x7fb0696320d0>
-D4: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb06962ee80>
-E1: <contentHandler.models.FormulaContent.FormulaContent object at 0x7fb06962ee20>
-E5: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb06962eb50>
-F6: <contentHandler.models.NumericalContent.NumericalContent object at 0x7fb06962ea30>
-F1: <contentHandler.models.FormulaContent.FormulaContent object at 0x7fb06962e7c0>
-G1: <contentHandler.models.FormulaContent.FormulaContent object at 0x7fb06962e5e0>
-H1: <contentHandler.models.FormulaContent.FormulaContent object at 0x7fb06962e1c0>
-I1: <contentHandler.models.FormulaContent.FormulaContent object at 0x7fb0695bc130>
-J1: <contentHandler.models.FormulaContent.FormulaContent object at 0x7fb0695bc850>
+1;=1+2;=10/(2+3);=A1*10-5;=(A5*4)/(A2+A2);=100/(A5+(A5*A5/5));=(A5*4)/(A2+A2)+15.0;=(A5*4)/(A2+A2)+SUMA(A1;A2;3;4;5);=(A5*4)/(A2+A2)+SUMA(A1;A2;3;4;5;A6:A12);=(A5*4)/(A2+A2)+SUMA(A1;A2;3;4;5;A6:A12;MIN(A13:A20))
+2;10
+3;;30
+4;;;8
+5;;;;20
+6;;;;;40

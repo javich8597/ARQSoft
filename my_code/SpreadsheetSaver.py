@@ -10,7 +10,7 @@ class SpreadsheetSaver:
             cells = spreadsheet.cells
             data_dict = {
                 coord: SpreadsheetSaver._convert_value(cell)  # Llamar a la función de conversión
-                for coord, cell in cells.items() if cell
+                for coord, cell in cells.items() if cell and cell.get_content()
             }
 
             # Determinar dimensiones de la hoja
@@ -22,11 +22,22 @@ class SpreadsheetSaver:
             df = pd.DataFrame("", index=range(1, max_row + 1), columns=columns)
             for coord, value in data_dict.items():
                 df.at[int(coord[1:]), coord[0]] = value
+            
+            df = df.loc[:, (df != "").any()]  # Eliminar columnas vacías
 
             # Guardar en archivo con extensión .s2v
             if not path.endswith(".s2v"):
                 path += ".s2v"
-            df.to_csv(path, sep=';', index=False, header=False)  # Guardar con punto y coma
+            
+            with open(path, 'w') as file:
+                for _, row in df.iterrows():
+                    line = list(row)
+                    while line and line[-1] == "":
+                        line.pop()
+
+                    file.write(";".join(str(cell) for cell in line) + "\n")
+
+            #df.to_csv(path, sep=';', index=False, header=False)  # Guardar con punto y coma
         except Exception as e:
             raise RuntimeError(f"An error occurred while saving the file: {e}")
 
