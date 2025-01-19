@@ -83,38 +83,46 @@ class FormulaContent(Content):
     def process_functions_formula(self, formula: str):
         """
         Procesa una fórmula buscando funciones y reemplazándolas por sus resultados en el mismo string.
+        Procesa funciones anidadas evaluándolas de adentro hacia afuera.
         :param formula: La fórmula en formato string.
         :return: La fórmula con las funciones reemplazadas por los resultados.
         """
         # Patrón para encontrar funciones como SUMA(1,2), MIN(A1:A2), etc.
-        if not re.search(r"\w+\(.*\)", formula):
-            # Si no hay funciones, no hace falta procesamiento adicional
-            return formula
+        function_pattern = re.compile(r"(\w+)\(([^()]*?)\)")  # Busca funciones más internas (sin paréntesis anidados)
         
-        function_pattern = re.compile(r"(\w+)\((.*?)\)")
-        # Busca todas las funciones en la fórmula
-        matches = function_pattern.findall(formula)
-        
-        for match in matches:
-            function_name, args_str = match
-            # Procesar referencias de rangos dentro de los argumentos
-            args = []
-            for arg in args_str.split(";"):
-                arg = arg.strip()
-                if ":" in arg:  # Es un rango
-                    arg = self.process_references_cells(arg)  # Reemplaza el rango por sus valores
-                args.append(arg)
-
-            #ERROR EVALUAR MATCH DE FINAL A PRINCIPIO DE LA CADENA PARA FUNCIONES CONCADENADAS
+        while True:
+            # Encuentra las funciones más internas
+            matches = list(function_pattern.finditer(formula))
+            if not matches:
+                break  # Si no hay más funciones, terminamos el procesamiento
             
-            # Convierte los argumentos en números (ya procesados los rangos)
-            numeric_args = [float(arg) for arg in ";".join(args).split(";")]
-            # Evalúa la función
-            result = evaluate_function(function_name, numeric_args)
-            # Reemplaza la función completa con su resultado numérico en la fórmula
-            formula = formula.replace(f"{function_name}({args_str})", str(result))
+            # Procesar las funciones desde el final hacia el principio
+            for match in reversed(matches):
+                function_name, args_str = match.groups()
+                
+                # Procesar referencias de rangos y celdas dentro de los argumentos
+                args = []
+                for arg in args_str.split(";"):
+                    arg = arg.strip()
+                    if ":" in arg:  # Es un rango
+                        arg = self.process_references_cells(arg)  # Reemplaza el rango por sus valores
+                    args.append(arg)
+                
+                # Convierte los argumentos en números (ya procesados los rangos)
+                numeric_args = [float(arg) for arg in ";".join(args).split(";")]
+                
+                # Evalúa la función
+                result = evaluate_function(function_name, numeric_args)
+                
+                # Reemplaza la función completa con su resultado en la fórmula
+                formula = (
+                    formula[:match.start()] +
+                    str(result) +
+                    formula[match.end():]
+                )
         
         return formula
+
 
     
     def process_references_cells(self, formula: str):
