@@ -35,9 +35,14 @@ class SpreadsheetSaver:
                     while line and line[-1] == "":
                         line.pop()
 
-                    file.write(";".join(str(cell) for cell in line) + "\n")
+                    # Reemplazar ';' por ',' dentro de las fórmulas antes de escribir
+                    formatted_cell = [
+                        str(cell).replace(';', ',') if isinstance(cell, str) and '=' in cell else str(cell)
+                        for cell in line
+                    ]
 
-            #df.to_csv(path, sep=';', index=False, header=False)  # Guardar con punto y coma
+                    file.write(";".join(formatted_cell) + "\n")
+                    
         except Exception as e:
             raise RuntimeError(f"An error occurred while saving the file: {e}")
 
@@ -49,8 +54,8 @@ class SpreadsheetSaver:
             return ""  # Si la celda está vacía o es None, devolvemos una cadena vacía
         try:
             # Si el contenido es un objeto con una fórmula, devolver la fórmula como texto
-            if hasattr(content, 'get_formula'):
-                return content.get_formula()
+            if hasattr(content, 'formula'):
+                return content.formula
 
             # Si el contenido es un objeto NumericalContent, obtener su valor numérico
             if hasattr(content, 'getValue'):
