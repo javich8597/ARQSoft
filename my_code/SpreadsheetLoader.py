@@ -1,14 +1,33 @@
 from my_code.Spreadsheet import Spreadsheet
+from pathlib import Path
+import sys
 
 class SpreadsheetLoader:
     @staticmethod
+    def __resolve_file_path(file_path: str) -> Path:
+        """Resuelve la ruta del archivo de forma robusta y compatible con distintos entornos."""
+        file_path = Path(file_path)
+
+        # path absoluto
+        if file_path.is_absolute():
+            return file_path.resolve()
+
+        # Esto ya resulve el problema de ruta relativa al file
+        entry_script_path = Path(sys.argv[0]).resolve()
+        script_parent_dir = entry_script_path.parent
+        resolved_path = (script_parent_dir / file_path).resolve()
+
+        return resolved_path
+
+    @staticmethod
     def load_spreadsheet(path):
+        resolved_path = SpreadsheetLoader.__resolve_file_path(path)
         try:
-            with open(path, "r") as file:
+            with open(resolved_path, "r") as file:
                 data = file.read()
                 return SpreadsheetLoader.parse_s2v_format(data)
         except FileNotFoundError:
-            raise FileNotFoundError("The specified file was not found.")
+            raise FileNotFoundError(f"The specified file was not found: {resolved_path}")
         except Exception as e:
             raise RuntimeError(f"An error occurred while loading the file: {e}")
 
@@ -17,9 +36,16 @@ class SpreadsheetLoader:
         spreadsheet = Spreadsheet()
         try:
             lines = data.splitlines()
-            for line in lines:
-                coordinate, content = line.split(":")
-                spreadsheet.set_cell_content(coordinate.strip(), content.strip())
+            for row_index, line in enumerate(lines, start=1):
+                # Dividir cada línea en celdas usando punto y coma como separador
+                cells = line.split(";")
+                for col_index, content in enumerate(cells, start=1):
+                    if content.strip():  # Ignorar celdas vacías
+                        # Convertir argumentos separados por "," a ";" para fórmulas
+                        if "(" in content and "," in content:
+                            content = content.replace(",", ";")
+                        coordinate = f"{chr(64 + col_index)}{row_index}"  # Convertir índice a coordenada
+                        spreadsheet.set_cell_content(coordinate, content.strip())
             return spreadsheet
         except Exception:
             raise ValueError("The file format is invalid. Unable to parse S2V format.")
