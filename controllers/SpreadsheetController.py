@@ -98,7 +98,7 @@ class SpreadsheetController:
             print(f"Error getting cell content as float: {e}")
             raise
 
-    def get_cell_content_as_string(self, coord):
+    def get_cell_content_as_string(self, coord) -> str:
         try:
             content = self.spreadsheet.get_cell_content(coord)
             return content.getValue() if content else ""
@@ -108,8 +108,9 @@ class SpreadsheetController:
 
     def get_cell_formula_expression(self, coord):
         try:
-            formula = self.get_cell_content_as_string(coord)
-            return formula.replace("=", "") if formula else ""
+            formula = self.spreadsheet.get_cell_content(coord)
+            return formula.formula
+            #return formula.replace("=", "") if formula else ""
         except Exception as e:
             print(f"Error getting cell formula expression: {e}")
             raise
