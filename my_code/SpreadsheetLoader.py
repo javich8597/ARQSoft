@@ -8,11 +8,11 @@ class SpreadsheetLoader:
         """Resuelve la ruta del archivo de forma robusta y compatible con distintos entornos."""
         file_path = Path(file_path)
 
-        # path absoluto
+        # path absolute
         if file_path.is_absolute():
             return file_path.resolve()
 
-        # Esto ya resulve el problema de ruta relativa al file
+        # This is relative path to the current working directory
         entry_script_path = Path(sys.argv[0]).resolve()
         script_parent_dir = entry_script_path.parent
         resolved_path = (script_parent_dir / file_path).resolve()
@@ -37,14 +37,12 @@ class SpreadsheetLoader:
         try:
             lines = data.splitlines()
             for row_index, line in enumerate(lines, start=1):
-                # Dividir cada línea en celdas usando punto y coma como separador
                 cells = line.split(";")
                 for col_index, content in enumerate(cells, start=1):
-                    if content.strip():  # Ignorar celdas vacías
-                        # Convertir argumentos separados por "," a ";" para fórmulas
+                    if content.strip():
                         if "(" in content and "," in content:
                             content = content.replace(",", ";")
-                        coordinate = f"{chr(64 + col_index)}{row_index}"  # Convertir índice a coordenada
+                        coordinate = f"{chr(64 + col_index)}{row_index}"
                         spreadsheet.set_cell_content(coordinate, content.strip())
             return spreadsheet
         except Exception:
