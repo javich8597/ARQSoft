@@ -8,17 +8,15 @@ class Cell:
     Represents a single cell within a spreadsheet.
     """
 
-    def __init__(self, row: int, col: str, content, spreadsheet) -> None: #test
+    def __init__(self, row: int, col: str, content, spreadsheet) -> None: 
         """
         Initializes a cell with its coordinates and optional content.
         """
-        #Content no es redundante? tenemos content como argumento y luego set content
         self.row = row
         self.col = col
         self.content = content  # Raw content of the cell (e.g., number, text, formula)
-        self.value = None  # Evaluated value of the cell (e.g., formula result) #error self.content.get_number_value()
-        #print(f"Spreadsheet asociado: {spreadsheet}")
-        self.spreadsheet = spreadsheet #test
+        self.value = None  # Evaluated value of the cell (e.g., formula result) 
+        self.spreadsheet = spreadsheet 
 
     def _identify_content(self, content):
         try:
@@ -30,12 +28,11 @@ class Cell:
             if isinstance(content, (int, float)):
                 return NumericalContent(content)
             elif isinstance(content, str) and content.startswith("="):
-                print(f"Spreadsheet asociado en FormulaContent: {self.spreadsheet}")
                 return FormulaContent(content[1:], self.spreadsheet) #test
             else:
                 return TextualContent(content)
         except Exception as e:
-            print(f"Error en la inicialización de Cell: {e}")
+            print(f"Error in Cell identification: {e}")
             raise
 
     def get_content(self) -> Content:
@@ -59,25 +56,27 @@ class Cell:
             - A numerical value (integer or float).
             - A textual value (default).
         """
-        # Elimina espacios en blanco al inicio y final
+        # Deletes spaces at the beginning and end of the string
         content_string = str(content_string).strip() #ERROR
 
-        # Determina el tipo de contenido
+        # Determines the type of content
         if content_string.startswith("="):
-            # Es contenido de tipo formula
+            # Formula type
             formula_content = FormulaContent(content_string, self.spreadsheet)
 
-            # Verifica dependencias circulares
+            # Verifies circular dependencies (not implemented)
             #self.checkCircularDependency(content_string) #test
 
-            # Calcula la formula y actualiza dependencias
+            # Calculate formula 
             formula_content.calculate_formula()
+
+            #Find new dependencies (not implemented)
             #new_dependencies = formula_content.getCircularDependences() #test
 
-            # Gestiona dependencias
+            #Update dependencies (not implemented)
             #self.updateDependencies(new_dependencies) #test
 
-            # Establece el contenido
+            # Sets content and value
             self.content = formula_content #ERROR, DEBEMOS GUARDARLO EN VALUE, CONTENT TIENE QUE TENER FORMULA
 
         else:
