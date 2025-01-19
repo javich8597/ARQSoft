@@ -110,7 +110,7 @@ class Cell:
             #self.updateDependencies(new_dependencies) #test
 
             # Establece el contenido
-            self.content = formula_content
+            self.content = formula_content #ERROR, DEBEMOS GUARDARLO EN VALUE, CONTENT TIENE QUE TENER FORMULA
 
         else:
             try:
