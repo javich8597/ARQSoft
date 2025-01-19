@@ -8,12 +8,12 @@ class Content(ABC):
         self.textualvalue = stringvalue
 
     @abstractmethod
-    def getNumericalValue(self) -> float:
+    def get_number_value(self) -> float:
         pass
 
     @abstractmethod
     def get_content(self):
         pass
     
-    def getValue(self) -> str:
+    def get_value(self) -> str:
         return self.textualvalue

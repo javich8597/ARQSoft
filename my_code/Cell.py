@@ -16,7 +16,7 @@ class Cell:
         self.row = row
         self.col = col
         self.content = content  # Raw content of the cell (e.g., number, text, formula)
-        self.value = None  # Evaluated value of the cell (e.g., formula result) #error self.content.getNumericalValue()
+        self.value = None  # Evaluated value of the cell (e.g., formula result) #error self.content.get_number_value()
         #print(f"Spreadsheet asociado: {spreadsheet}")
         self.spreadsheet = spreadsheet #test
 
@@ -49,9 +49,9 @@ class Cell:
         Sets the raw content of the cell.
         """
         self.content = self._identify_content(content)
-        self.value = self.content.getNumericalValue()
+        self.value = self.content.get_number_value()
 
-    def getValue(self):
+    def get_value(self):
         """
         Returns the evaluated value of the cell.
         """

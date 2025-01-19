@@ -1,7 +1,6 @@
 from my_code.Spreadsheet import Spreadsheet
 from my_code.SpreadsheetLoader import SpreadsheetLoader
 from my_code.SpreadsheetSaver import SpreadsheetSaver
-from contentHandler.models.Content import Content
 from ui.UserInterface import UserInterface
 
 class SpreadsheetController:
@@ -75,7 +74,7 @@ class SpreadsheetController:
     def get_cell_content_as_float(self, coord):
         try:
             content = self.spreadsheet.get_cell_content(coord)
-            return content.getNumericalValue() if content else 0.0
+            return content.get_number_value() if content else 0.0
         except Exception as e:
             print(f"Error getting cell content as float: {e}")
             raise
@@ -83,7 +82,7 @@ class SpreadsheetController:
     def get_cell_content_as_string(self, coord) -> str:
         try:
             content = self.spreadsheet.get_cell_content(coord)
-            return content.getValue() if content else ""
+            return content.get_value() if content else ""
         except Exception as e:
             print(f"Error getting cell content as string: {e}")
             raise
@@ -151,6 +150,6 @@ class SpreadsheetController:
             print(f"{row:<4}", end="")  # Número de fila alineado a la izquierda
             for col in col_headers:
                 cell_content = self.spreadsheet.get_cell_content(f"{col}{row}")
-                cell_value = cell_content.getValue() if cell_content else ""
+                cell_value = cell_content.get_value() if cell_content else ""
                 print(f"{cell_value:^10}", end="")  # Contenido de la celda centrado
             print()  # Nueva línea al final de cada fila

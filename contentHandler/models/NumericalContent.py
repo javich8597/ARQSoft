@@ -5,7 +5,7 @@ class NumericalContent(Content):
         super().__init__('number', str(number))
         self.number = number
 
-    def getNumericalValue(self):
+    def get_number_value(self):
         return self.number
     
     def get_content(self):

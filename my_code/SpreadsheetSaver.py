@@ -58,8 +58,8 @@ class SpreadsheetSaver:
                 return content.formula
 
             # Si el contenido es un objeto NumericalContent, obtener su valor numérico
-            if hasattr(content, 'getValue'):
-                value = content.getValue()
+            if hasattr(content, 'get_value'):
+                value = content.get_value()
 
                 # Intentar convertir a float primero
                 float_value = float(value)

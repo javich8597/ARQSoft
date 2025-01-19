@@ -266,7 +266,7 @@ def computeFormula(formula: str, cellValues: dict):
                 # Obtener el objeto y su valor numerico
                 cell_obj = cellValues[ref]
                 if isinstance(cell_obj, NumericalContent):
-                    return str(cell_obj.getNumericalValue())
+                    return str(cell_obj.get_number_value())
                 else:
                     raise ValueError(f"Cell {ref} is not a NumericalContent object.")
             else:

@@ -41,7 +41,7 @@ class FormulaContent(Content):
                         # Obtener el objeto y su valor numerico
                         cell_obj = cell_values[ref]
                         if isinstance(cell_obj, NumericalContent):
-                            return str(cell_obj.getNumericalValue())
+                            return str(cell_obj.get_number_value())
                         else:
                             raise ValueError(f"Cell {ref} is not a NumericalContent object.")
                     else:
@@ -68,12 +68,12 @@ class FormulaContent(Content):
             return None
 
     def getTextualValue(self):
-        return self.getValue()
+        return self.get_value()
 
     def get_content(self):
         return f"Formula: {self.formula}"
 
-    def getNumericalValue(self):
+    def get_number_value(self):
         return self.calculate_formula()
         
     def process_functions_formula(self, formula: str):
@@ -135,7 +135,7 @@ class FormulaContent(Content):
             values = []
             for cell_coord in cell_range:
                 if cell_coord in cellValues and isinstance(cellValues[cell_coord], NumericalContent):
-                    values.append(str(cellValues[cell_coord].getNumericalValue()))
+                    values.append(str(cellValues[cell_coord].get_number_value()))
                 else:
                     raise ValueError(f"Cell {cell_coord} in range {coord1}:{coord2} is undefined or invalid.")
             
@@ -148,7 +148,7 @@ class FormulaContent(Content):
         def replace_reference(match):
             ref = match.group(0)
             if ref in cellValues and isinstance(cellValues[ref], NumericalContent):
-                return str(cellValues[ref].getNumericalValue())
+                return str(cellValues[ref].get_number_value())
             else:
                 raise ValueError(f"Undefined or invalid cell reference: {ref}")
 
