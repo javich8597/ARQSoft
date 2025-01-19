@@ -10,7 +10,7 @@ class FormulaContent(Content):
         self.spreadsheet = spreadsheet
         
 
-    def calculateFormula(self):
+    def calculate_formula(self):
         try:
             # Evita recursion infinita usando un conjunto de celdas en proceso
             #if self.coordinate in self.spreadsheet.processing: #test3
@@ -19,7 +19,7 @@ class FormulaContent(Content):
             # Marca la celda como en proceso
             #self.spreadsheet.processing.add(self.coordinate)
 
-            cell_values = self.spreadsheet.getCells() #test
+            cell_values = self.spreadsheet.get_cells() #test
             formula = self.formula
             #PRIMERO BUSCAR TODAS LAS REFERENCIAS A CELDAS Y SUSTITUIRLAS POR SU VALOR
             formula = self.process_references_cells(formula)
@@ -74,7 +74,7 @@ class FormulaContent(Content):
         return f"Formula: {self.formula}"
 
     def getNumericalValue(self):
-        return self.calculateFormula()
+        return self.calculate_formula()
         
     def process_functions_formula(self, formula: str):
         """
@@ -123,11 +123,11 @@ class FormulaContent(Content):
     
     def process_references_cells(self, formula: str):
          # Procesar rangos primero
-        cellValues = self.spreadsheet.getCells() #test
+        cellValues = self.spreadsheet.get_cells() #test
         range_pattern = r"([A-Z]+[0-9]+):([A-Z]+[0-9]+)"
         for match in re.finditer(range_pattern, formula):
             coord1, coord2 = match.groups()  # Coordenadas del rango
-            cell_range = getCellRange(coord1, coord2)  # Obtén las celdas del rango
+            cell_range = get_cell_range(coord1, coord2)  # Obtén las celdas del rango
             if not cell_range:
                 raise ValueError(f"Invalid range: {coord1}:{coord2}")
 
@@ -156,6 +156,13 @@ class FormulaContent(Content):
         formula = re.sub(pattern, replace_reference, formula)
 
         return formula
+    
+    def get_referenced_cells(content): #test2
+        """
+        Extracts cell references (e.g., 'A2', 'A3') from the formula.
+        """
+        pattern = r"[A-Z]+[0-9]+"
+        return re.findall(pattern, content)
     
     
 
@@ -187,7 +194,7 @@ def evaluate_function(function_name, args):
     else:
         raise ValueError(f"Función {function_name} no soportada")
     
-def getCellRange(coord1: str, coord2: str):
+def get_cell_range(coord1: str, coord2: str):
         """
         Returns a list of cell coordinates within a rectangular range.
         
@@ -236,3 +243,4 @@ def getCellRange(coord1: str, coord2: str):
         coord_list = [f"{col}{row}" for col in columns for row in range(row_start, row_end + 1)]
 
         return coord_list
+

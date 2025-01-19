@@ -1,7 +1,6 @@
 from my_code.Spreadsheet import Spreadsheet
 from my_code.SpreadsheetLoader import SpreadsheetLoader
 from my_code.SpreadsheetSaver import SpreadsheetSaver
-#from my_code.DependencyManager import DependencyManager
 from contentHandler.models.Content import Content
 from ui.UserInterface import UserInterface
 
@@ -9,27 +8,10 @@ class SpreadsheetController:
     def __init__(self):
         self.spreadsheet = Spreadsheet()
         self.userInterface = UserInterface()
-        #self.dependencyManager = DependencyManager()
-        self.newsheet: Spreadsheet = None
 
     def create_new_spreadsheet(self) -> Spreadsheet:
         self.spreadsheet = Spreadsheet()
         print("Nueva hoja de cálculo creada")
-
-    #def set_cell_content(self, coordinate, content):
-    #    try:
-    #        if not coordinate or not content:
-    #            raise ValueError("La coordenada o el contenido no pueden estar vacíos.")
-    #        
-    #        if isinstance(content, str) and content.startswith("="):
-    #            dependencies = self.dependencyManager.extractDependencies(content)
-    #            self.dependencyManager.addDependency(coordinate, dependencies)
-    #            
-    #    #Javi: se deberia de llamar aqui a edit_cell?
-    #        self.spreadsheet.set_cell_content(coordinate, content)
-    #        print(f"Contenido de la celda {coordinate} establecido a {content}")
-    #    except Exception as e:
-    #        print(f"Error al establecer el contenido de la celda: {e}")
 
     def get_cell_content(self, coordinate):
         try:
@@ -40,12 +22,12 @@ class SpreadsheetController:
             print(f"Error al obtener el contenido de la celda: {e}")
             return None
         
-    def showMenu(self):
+    def show_menu(self):
         self.userInterface.displayMenu()
         command = self.userInterface.getUserChoice()
         self.processCommand(command)
 
-    def processCommand(self, command: str):
+    def process_command(self, command: str):
         """
         Processes a single command entered by the user or read from a file.
         """
@@ -57,7 +39,7 @@ class SpreadsheetController:
                 if len(parts) < 2:
                     print("Error: Missing file path for RF command.")
                 else:
-                    self.readCommandsFromFile(parts[1])
+                    self.read_commands_from_file(parts[1])
             elif cmd == "C":
                 self.create_new_spreadsheet()
             elif cmd == "E":
@@ -65,7 +47,7 @@ class SpreadsheetController:
                     print("Error: Missing arguments for E command.")
                 else:
                     self.set_cell_content(parts[1], parts[2])
-                    self.printSpreadsheet()
+                    self.print_spreadsheet()
             elif cmd == "L":
                 if len(parts) < 2:
                     print("Error: Missing file path for L command.")
@@ -131,7 +113,7 @@ class SpreadsheetController:
             print(f"Error loading spreadsheet from file: {e}")
             raise
 
-    def readCommandsFromFile(self, file_path: str):
+    def read_commands_from_file(self, file_path: str):
         """
         Reads and processes commands from a file.
         """
@@ -144,12 +126,12 @@ class SpreadsheetController:
             print(f"Error: File not found at {file_path}.")
 
     #Print por la terminal toda la informacion de la celda
-    def printSpreadsheet(self):
+    def print_spreadsheet(self):
         """
         Prints the spreadsheet in a format similar to an Excel sheet.
         """
         # Obtener los límites
-        min_row, max_row, min_col, max_col = self.spreadsheet.getBoundaries()
+        min_row, max_row, min_col, max_col = self.spreadsheet.get_boundaries()
 
         # Generar los encabezados de columnas (sin conversiones)
         col_headers = []

@@ -38,25 +38,6 @@ class Cell:
             print(f"Error en la inicialización de Cell: {e}")
             raise
 
-    def getCoordinate(self):
-        """
-        Returns the coordinates of the cell as a tuple (row, col).
-        """
-        return self.row, self.col
-
-    def setCoordinate(self, row: int, col: str):
-        """
-        Sets the coordinates of the cell composed by row and column.
-        """
-
-        if not isinstance(row, int) or row <= 0:
-            raise ValueError("Row must be a positive integer.")
-        if not isinstance(col, str) or not col.isalpha():
-            raise ValueError("Column must be a string containing only letters.")
-        
-        self.row = row
-        self.col = col
-
     def get_content(self) -> Content:
         """
         Gets the raw content of the cell.
@@ -75,14 +56,8 @@ class Cell:
         Returns the evaluated value of the cell.
         """
         return self.value
-
-    def setValue(self, value):
-        """
-        Sets the evaluated value of the cell.
-        """
-        self.value = value
    
-    def insertContent(self, content_string):
+    def insert_content(self, content_string):
         """
         Inserts content into the cell, determining its type dynamically.
 
@@ -103,7 +78,7 @@ class Cell:
             #self.checkCircularDependency(content_string) #test
 
             # Calcula la formula y actualiza dependencias
-            formula_content.calculateFormula()
+            formula_content.calculate_formula()
             #new_dependencies = formula_content.getCircularDependences() #test
 
             # Gestiona dependencias

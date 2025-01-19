@@ -46,11 +46,11 @@ class Spreadsheet:
             cell = self.cells[coordinate]
 
         # Insertar contenido en la celda (esto tambien calcula la formula si aplica)
-        cell.insertContent(content)
+        cell.insert_content(content)
         self.cells[coordinate] = cell
         # Si el contenido es una formula, actualizamos dependencias en el DependencyManager
         if isinstance(cell.content, FormulaContent): #if '=' in content: Era un error
-            referenced_cells = getReferencedCells(content)
+            referenced_cells = FormulaContent.get_referenced_cells(content)
 
             # Eliminar dependencias antiguas y registrar nuevas
             self.dependency_manager.removeDependencies(coordinate) #AQUI
@@ -59,21 +59,13 @@ class Spreadsheet:
         # Notificar a las celdas dependientes
         dependents = self.dependency_manager.getDependents(coordinate)
         for dependent in dependents:
-            self.cells[dependent].insertContent(self.cells[dependent].content.formula)
+            self.cells[dependent].insert_content(self.cells[dependent].content.formula)
 
     def get_cell_content(self, coordinate):
         if coordinate in self.cells:
             return self.cells[coordinate].get_content()
         else:
             return None
-        #ValueError(f"Cell at {coordinate} does not exist.") we need this?
-
-    def get_cell_value(self, coordinate):
-        if coordinate in self.cells:
-            #ERROR AQUI
-            return self.cells[coordinate].getValue()
-        else:
-            raise ValueError(f"Cell at {coordinate} does not exist.")
 
     def _validate_coordinates(self, coordinate):
         # Validate coordinates like "A1", "B2", etc.
@@ -83,24 +75,7 @@ class Spreadsheet:
         # Validate content type
         return isinstance(content, (str, int, float))
 
-    def _split_coordinate(self, coordinate):
-        # Split coordinates into row and column (e.g., "A1" -> "A", "1")
-        match = re.match(r"^([A-Z]+)(\d+)$", coordinate)
-        if match:
-            return match.groups()
-        else:
-            raise ValueError("Invalid coordinate format.")
-        
-    def getCellValues(self):
-        # Devuelve un diccionario con los valores de las celdas
-        #return {cell.getCoordinate(): cell.getValue() for cell in self.cells}
-        result = {}
-        for coord, cell in self.cells.items():
-            value = cell.getValue()
-            result[coord] = value if value is not None else ""
-        return result        #FALTA UN RANGO??
-
-    def getBoundaries(self):
+    def get_boundaries(self):
         """
         Gets the boundaries of the spreadsheet based on the initialized cells.
         :return: Tuple (min_row, max_row, min_col, max_col).
@@ -123,7 +98,7 @@ class Spreadsheet:
 
         return min(rows), max(rows), min(cols), max(cols)
 
-    def getCells(self): #test2
+    def get_cells(self): #test2
         """
         Devuelve un diccionario con referencias de celdas como claves y sus contenidos como valores.
         """
@@ -135,10 +110,3 @@ class Spreadsheet:
             else:
                 cells_data[coordinate] = None
         return cells_data
-
-def getReferencedCells(content): #test2
-        """
-        Extracts cell references (e.g., 'A2', 'A3') from the formula.
-        """
-        pattern = r"[A-Z]+[0-9]+"
-        return re.findall(pattern, content)

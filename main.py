@@ -7,7 +7,7 @@ def main():
     spreadsheetcontroller = SpreadsheetController()
     while True:
         try:
-            spreadsheetcontroller.showMenu()
+            spreadsheetcontroller.show_menu()
         except Exception as error:
             print(f"Error: {error}")
 
