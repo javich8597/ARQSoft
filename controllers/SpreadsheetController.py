@@ -38,6 +38,8 @@ class SpreadsheetController:
                     print("Error: Missing file path for RF command.")
                 else:
                     self.read_commands_from_file(parts[1])
+                    self.print_spreadsheet()
+                    
             elif cmd == "C":
                 self.create_new_spreadsheet()
             elif cmd == "E":
@@ -46,16 +48,21 @@ class SpreadsheetController:
                 else:
                     self.set_cell_content(parts[1], parts[2])
                     self.print_spreadsheet()
+                   
             elif cmd == "L":
                 if len(parts) < 2:
                     print("Error: Missing file path for L command.")
                 else:
                     self.load_spreadsheet_from_file(parts[1])
+                    self.print_spreadsheet()
+                   
             elif cmd == "S":
                 if len(parts) < 2:
                     print("Error: Missing file path for S command.")
                 else:
                     self.save_spreadsheet_to_file(parts[1])
+                    self.print_spreadsheet()
+
             else:
                 print(f"Error: Unknown command {cmd}.")
         except Exception as e:
